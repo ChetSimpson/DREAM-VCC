@@ -153,7 +153,6 @@ unsigned char pia0_read(unsigned char port)
 			if (dda)
 			{
 				rega[1]=(rega[1] & 63);
-				CPUDeAssertInterupt(IS_PIA0_HSYNC, INT_IRQ);
 				return (vccKeyboardGetScan(rega[2]|~rega_dd[2])); //Read
 			}
 			else
@@ -164,7 +163,6 @@ unsigned char pia0_read(unsigned char port)
 			if (ddb)
 			{
 				rega[3]=(rega[3] & 63);
-				CPUDeAssertInterupt(IS_PIA0_VSYNC, INT_IRQ);
 				return(rega[port] & rega_dd[port]);
 			}
 			else
@@ -193,7 +191,6 @@ unsigned char pia1_read(unsigned char port)
 			if (ddb)
 			{
 				regb[3]= (regb[3] & 63);
-				CPUDeAssertInterupt(IS_PIA1_CART, INT_FIRQ);
 				return(regb[port] & regb_dd[port]);
 			}
 			else
@@ -204,7 +201,6 @@ unsigned char pia1_read(unsigned char port)
 			if (dda)
 			{
 				regb[1]=(regb[1] & 63); //Cass In
-				CPUDeAssertInterupt(IS_PIA1_CD, INT_FIRQ);
 				Flag = regb[port];//& regb_dd[port];
 				return Flag;
 			}
@@ -326,7 +322,7 @@ void irq_hs(int phase)	//63.5 uS
 			return;
 		rega[1]=(rega[1] | 128);
 		if (rega[1] & 1)
-			CPUAssertInterupt(IS_PIA0_HSYNC, INT_IRQ);
+			CPUAssertInterupt(IRQ,1);
 	break;
 
 	case RISING:	//HS went Low to High
@@ -334,13 +330,13 @@ void irq_hs(int phase)	//63.5 uS
 			return;
 		rega[1]=(rega[1] | 128);
 		if (rega[1] & 1)
-			CPUAssertInterupt(IS_PIA0_HSYNC, INT_IRQ);
+			CPUAssertInterupt(IRQ,1);
 	break;
 
 	case ANY:
 		rega[1]=(rega[1] | 128);
 		if (rega[1] & 1)
-			CPUAssertInterupt(IS_PIA0_HSYNC, INT_IRQ);
+			CPUAssertInterupt(IRQ,1);
 	break;
 	} //END switch
 
@@ -358,7 +354,7 @@ void irq_fs(int phase)	//60HZ Vertical sync pulse 16.667 mS
 			{
 				rega[3] = (rega[3] | 128);
 				if (rega[3] & 1)
-					CPUAssertInterupt(IS_PIA0_VSYNC, INT_IRQ);
+					CPUAssertInterupt(IRQ, 4);
 			}
 			return;
 			break;
@@ -369,7 +365,7 @@ void irq_fs(int phase)	//60HZ Vertical sync pulse 16.667 mS
 			{
 				rega[3] = (rega[3] | 128);
 				if (rega[3] & 1)
-					CPUAssertInterupt(IS_PIA0_VSYNC, INT_IRQ);
+					CPUAssertInterupt(IRQ, 1);
 			}
 			return;
 			break;
@@ -382,9 +378,9 @@ void AssertCart()
 {
 	regb[3]=(regb[3] | 128);
 	if (regb[3] & 1)
-		CPUAssertInterupt(IS_PIA1_CART, INT_FIRQ);
+		CPUAssertInterupt(FIRQ,0);
 	else
-		CPUDeAssertInterupt(IS_PIA1_CART, INT_FIRQ);
+		CPUDeAssertInterupt(FIRQ); //Kludge but working
 }
 
 void PiaReset()

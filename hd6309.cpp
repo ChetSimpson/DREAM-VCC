@@ -128,8 +128,8 @@ static signed char stemp8;
 static unsigned int  temp32;
 static int stemp32;
 static unsigned char temp8; 
-static unsigned char InterruptLine[IS_MAX] = { 0 };
-static VCC::DFF InterruptLatch;
+static unsigned char PendingInterupts=0;
+static unsigned char IRQWaiter=0;
 static unsigned char Source=0,Dest=0;
 static unsigned char postbyte=0;
 static short unsigned postword=0;
@@ -216,8 +216,6 @@ void Page_3();
 void MemWrite32(unsigned int, unsigned short);
 unsigned int MemRead32(unsigned short);
 //END Fuction Prototypes-----------------------------------
-
-#include "CpuCommon.h"
 
 void HD6309Reset()
 {
@@ -6216,6 +6214,7 @@ void Halt()
 void Break()
 {
 	if (EmuState.Debugger.Break_Enabled()) {
+		PendingInterupts = 0;
 		EmuState.Debugger.Halt();
 	} else {
 		CycleCounter+=NatEmuCycles21;
@@ -7038,14 +7037,20 @@ int HD6309Exec(int CycleFor)
 			return(CycleFor - CycleCounter);
 		}
 
-		LatchInterrupts();
-
-		if (NMI())
+		if (PendingInterupts)
+		{
+			if (PendingInterupts & 4)
 			cpu_nmi();
-		else if (FIRQ() && !CC(F))
+			else if (PendingInterupts & 2)
 			cpu_firq();
-		else if (IRQ() && !CC(I))
-			cpu_irq();
+			else if (PendingInterupts & 1)
+			{
+				if (IRQWaiter == 0)	// This is needed to fix a subtle timming problem
+					cpu_irq();		// It allows the CPU to see $FF03 bit 7 high before
+				else				// The IRQ is asserted.
+					IRQWaiter -= 1;
+			}
+		}
 
 		if (SyncWaiting == 1)	//Abort the run nothing happens asyncronously from the CPU
 			return 0; // WDZ - Experimental SyncWaiting should still return used cycles (and not zero) by breaking from loop
@@ -7114,11 +7119,15 @@ void Page_3() //11
 
 void cpu_firq()
 {
-	if (EmuState.Debugger.IsTracing())
-		EmuState.Debugger.TraceCaptureInterruptServicing(INT_FIRQ, CycleCounter, HD6309GetState());
-
-	switch (md[FIRQMODE])
+	
+	if (!cc[F])
 	{
+	if (EmuState.Debugger.IsTracing())
+		{
+			EmuState.Debugger.TraceCaptureInterruptServicing(FIRQ, CycleCounter, HD6309GetState());
+		}
+		switch (md[FIRQMODE])
+		{
 		case 0:
 			cc[E] = 0; // Turn E flag off
 			MemWrite8(pc.B.lsb, --S_REG);
@@ -7153,16 +7162,31 @@ void cpu_firq()
 			PC_REG = MemRead16(VFIRQ);
 			break;
 	}
+		if (EmuState.Debugger.IsTracing())
+		{
+			EmuState.Debugger.TraceCaptureInterruptExecuting(FIRQ, CycleCounter, HD6309GetState());
+		}
 
+	}
+	else
+	{
 	if (EmuState.Debugger.IsTracing())
-		EmuState.Debugger.TraceCaptureInterruptExecuting(INT_FIRQ, CycleCounter, HD6309GetState());
+		{
+			EmuState.Debugger.TraceCaptureInterruptMasked(FIRQ, CycleCounter, HD6309GetState());
+}
+	}
+	PendingInterupts=PendingInterupts & 253;
+	return;
 }
 
 void cpu_irq()
 {
+	if (!cc[I])
+	{
 	if (EmuState.Debugger.IsTracing())
-		EmuState.Debugger.TraceCaptureInterruptServicing(INT_IRQ, CycleCounter, HD6309GetState());
-
+		{
+			EmuState.Debugger.TraceCaptureInterruptServicing(IRQ, CycleCounter, HD6309GetState());
+		}
 	cc[E] = 1;
 	MemWrite8(pc.B.lsb, --S_REG);
 	MemWrite8(pc.B.msb, --S_REG);
@@ -7183,15 +7207,28 @@ void cpu_irq()
 	MemWrite8(getcc(), --S_REG);
 	PC_REG = MemRead16(VIRQ);
 	cc[I] = 1;
-
 	if (EmuState.Debugger.IsTracing())
-		EmuState.Debugger.TraceCaptureInterruptExecuting(INT_IRQ, CycleCounter, HD6309GetState());
+		{
+			EmuState.Debugger.TraceCaptureInterruptExecuting(IRQ, CycleCounter, HD6309GetState());
+}
+	}
+	else
+	{
+		if (EmuState.Debugger.IsTracing())
+		{
+			EmuState.Debugger.TraceCaptureInterruptMasked(IRQ, CycleCounter, HD6309GetState());
+		}
+	}
+	PendingInterupts=PendingInterupts & 254;
+	return;
 }
 
 void cpu_nmi()
 {
 	if (EmuState.Debugger.IsTracing())
-		EmuState.Debugger.TraceCaptureInterruptServicing(INT_NMI, CycleCounter, HD6309GetState());
+	{
+		EmuState.Debugger.TraceCaptureInterruptServicing(NMI, CycleCounter, HD6309GetState());
+	}
 
 	cc[E] = 1;
 	MemWrite8(pc.B.lsb, --S_REG);
@@ -7216,9 +7253,12 @@ void cpu_nmi()
 	PC_REG = MemRead16(VNMI);
 
 	if (EmuState.Debugger.IsTracing())
-		EmuState.Debugger.TraceCaptureInterruptExecuting(INT_NMI, CycleCounter, HD6309GetState());
+	{
+		EmuState.Debugger.TraceCaptureInterruptExecuting(NMI, CycleCounter, HD6309GetState());
+	}
 
-	ClearNMI();
+	PendingInterupts=PendingInterupts & 251;
+	return;
 }
 
 static unsigned short CalculateEA(unsigned char postbyte)
@@ -7512,25 +7552,22 @@ unsigned char getmd()
 		return binmd;
 }
 	
-void HD6309AssertInterupt(InterruptSource src, Interrupt interrupt)
+void HD6309AssertInterupt(unsigned char Interupt,unsigned char waiter)// 4 nmi 2 firq 1 irq
 {
-	assert(src >= IS_NMI && src < IS_MAX);
-	assert(interrupt >= INT_IRQ && interrupt <= INT_NMI);
-
-	if (SyncWaiting)
-		LatchInterrupts();
 	SyncWaiting = 0;
-
+	PendingInterupts=PendingInterupts | (1<<(Interupt-1));
+	IRQWaiter=waiter;
 	if (EmuState.Debugger.IsTracing())
-		EmuState.Debugger.TraceCaptureInterruptRequest(interrupt, CycleCounter, HD6309GetState());
+	{
+		EmuState.Debugger.TraceCaptureInterruptRequest(Interupt, CycleCounter, HD6309GetState());
+}
+	return;
 }
 
-void HD6309DeAssertInterupt(InterruptSource src, Interrupt interrupt)
+void HD6309DeAssertInterupt(unsigned char Interupt)// 4 nmi 2 firq 1 irq
 {
-	assert(src >= IS_NMI && src < IS_MAX);
-	assert(interrupt >= INT_IRQ && interrupt <= INT_NMI);
-
-	InterruptLine[src] &= BitMask(interrupt);
+	PendingInterupts=PendingInterupts & ~(1<<(Interupt-1));
+	return;
 }
 
 void InvalidInsHandler()
@@ -7587,8 +7624,8 @@ return 0;
 
 void HD6309ForcePC(unsigned short NewPC)
 {
-	ClearInterrupts();
 	PC_REG=NewPC;
+	PendingInterupts=0;
 	SyncWaiting=0;
 	return;
 }

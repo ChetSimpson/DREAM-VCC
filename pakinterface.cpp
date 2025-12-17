@@ -54,7 +54,6 @@ const vcc::utils::cartridge_catalog cartridge_catalog_(
 	.parent_path()
 	.append("Cartridges"));
 
-void PakAssertInterupt(Interrupt interrupt, InterruptSource source);
 
 
 class vcc_expansion_port_bus : public ::vcc::bus::expansion_port_bus
@@ -83,17 +82,17 @@ public:
 
 	void assert_irq_interrupt_line() override
 	{
-		PakAssertInterupt(INT_IRQ, IS_NMI);
+		CPUAssertInterupt(IRQ, 0);
 	}
 
 	void assert_nmi_interrupt_line() override
 	{
-		PakAssertInterupt(INT_NMI, IS_NMI);
+		CPUAssertInterupt(NMI, 0);
 	}
 
 	void assert_cartridge_interrupt_line() override
 	{
-		PakAssertInterupt(INT_CART, IS_NMI);
+		SetCart(true);
 	}
 
 };
@@ -167,6 +166,7 @@ public:
 	}
 
 };
+
 
 std::filesystem::path PakGetSystemRomPath()
 {
@@ -244,21 +244,6 @@ void PakWritePort(unsigned char Port,unsigned char Data)
 unsigned char PackMem8Read (unsigned short Address)
 {
 	return gExpansionSlot.read_memory_byte(Address&32767);
-}
-
-// Convert PAK interrupt assert to CPU assert or Gime assert.
-void PakAssertInterupt(Interrupt interrupt, InterruptSource source)
-{
-	(void) source; // not used
-
-	switch (interrupt) {
-	case INT_CART:
-		GimeAssertCartInterupt();
-		break;
-	case INT_NMI:
-		CPUAssertInterupt(IS_NMI, INT_NMI);
-		break;
-	}
 }
 
 unsigned short PackAudioSample()
