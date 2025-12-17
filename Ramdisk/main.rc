@@ -91,7 +91,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MODULE_NAME         "<UnknownOrigin> 512K Ram Disk"
+    IDS_MODULE_NAME         "512K Ram Disk/Buffer"
 END
 
 #endif    // English (United States) resources

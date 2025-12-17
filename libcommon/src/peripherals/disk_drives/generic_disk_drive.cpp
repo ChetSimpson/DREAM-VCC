@@ -119,14 +119,14 @@ namespace vcc::peripherals::disk_drives
 	}
 
 
-	void generic_disk_drive::read_sector(
+	generic_disk_drive::error_id_type generic_disk_drive::read_sector(
 		size_type drive_head,
 		size_type head_id,
 		size_type track_id,
 		size_type sector_id,
 		buffer_type& data_buffer) const
 	{
-		disk_image_->read_sector(
+		return disk_image_->read_sector(
 			drive_head,
 			head_position(),
 			head_id,
@@ -135,14 +135,14 @@ namespace vcc::peripherals::disk_drives
 			data_buffer);
 	}
 
-	void generic_disk_drive::write_sector(
+	generic_disk_drive::error_id_type generic_disk_drive::write_sector(
 		size_type drive_head,
 		size_type head_id,
 		size_type track_id,
 		size_type sector_id,
 		const buffer_type& data_buffer) const
 	{
-		disk_image_->write_sector(
+		return disk_image_->write_sector(
 			drive_head,
 			head_position(),
 			head_id,
@@ -209,8 +209,11 @@ namespace vcc::peripherals::disk_drives
 
 	void generic_disk_drive::seek_to_track(size_type drive_track)
 	{
-		//	FIXME: Check for exceeding max track. Maybe throw if out of bounds.
-		head_position_ = drive_track;
+		// TODO-CHET: If the emulator is expected to support images that have less than
+		// 35 tracks the number of tracks should probably be managed here most likely via
+		// a value passed to the ctor. Even if the disk image has 35 tracks it may be
+		// beneficial to only support 40 and 80 track disk drives.
+		head_position_ = std::min(drive_track, track_count() - 1);
 	}
 
 }

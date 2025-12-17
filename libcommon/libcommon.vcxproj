@@ -73,7 +73,6 @@
     <ClCompile Include="src\bus\cartridges\rom_cartridge.cpp" />
     <ClCompile Include="src\bus\cartridge_driver.cpp" />
     <ClCompile Include="src\devices\psg\sn76496.cpp" />
-    <ClCompile Include="src\bus\cartridge_catalog.cpp" />
     <ClCompile Include="src\devices\rom\banked_rom_image.cpp" />
     <ClCompile Include="src\devices\rom\rom_image.cpp" />
     <ClCompile Include="src\devices\rtc\ds1315.cpp" />
@@ -95,7 +94,9 @@
     <ClCompile Include="src\ui\menu\menu_item_collection.cpp" />
     <ClCompile Include="src\peripherals\disk_drives\generic_disk_drive.cpp" />
     <ClCompile Include="src\utils\basic_guid.cpp" />
+    <ClCompile Include="src\utils\cartridge_catalog.cpp" />
     <ClCompile Include="src\utils\cartridge_loader.cpp" />
+    <ClCompile Include="src\utils\resource_location.cpp" />
     <ClCompile Include="src\utils\load_disk_image.cpp" />
     <ClCompile Include="src\utils\noop_mutex.cpp" />
     <ClCompile Include="src\utils\persistent_section_value_store.cpp" />
@@ -111,13 +112,11 @@
     <ClInclude Include="include\vcc\bus\cartridges\empty_cartridge.h" />
     <ClInclude Include="include\vcc\bus\cartridges\rom_cartridge.h" />
     <ClInclude Include="include\vcc\bus\cartridge_driver.h" />
-    <ClInclude Include="include\vcc\bus\cartridge_catalog.h" />
     <ClInclude Include="include\vcc\bus\expansion_port_ui.h" />
     <ClInclude Include="include\vcc\bus\expansion_port_bus.h" />
     <ClInclude Include="include\vcc\bus\cartridge_factory.h" />
     <ClInclude Include="include\vcc\bus\expansion_port_host.h" />
     <ClInclude Include="include\vcc\bus\expansion_port.h" />
-    <ClInclude Include="include\vcc\bus\cartridge_catalog_item.h" />
     <ClInclude Include="include\vcc\common\DialogOps.h" />
     <ClInclude Include="include\vcc\detail\exports.h" />
     <ClInclude Include="include\vcc\devices\psg\sn76496.h" />
@@ -126,6 +125,7 @@
     <ClInclude Include="include\vcc\devices\rtc\ds1315.h" />
     <ClInclude Include="include\vcc\devices\rtc\oki_m6242b.h" />
     <ClInclude Include="include\vcc\devices\serial\beckerport.h" />
+    <ClInclude Include="include\vcc\media\disk_error_id.h" />
     <ClInclude Include="include\vcc\media\disk_geometry.h" />
     <ClInclude Include="include\vcc\media\disk_image.h" />
     <ClInclude Include="include\vcc\media\disk_images\generic_disk_image.h" />
@@ -152,7 +152,12 @@
     <ClInclude Include="include\vcc\ui\menu\menu_item_collection.h" />
     <ClInclude Include="include\vcc\ui\menu\menu_item_visitor.h" />
     <ClInclude Include="include\vcc\utils\borrowed_ptr.h" />
+    <ClInclude Include="include\vcc\utils\cartridge_catalog.h" />
+    <ClInclude Include="include\vcc\utils\cartridge_catalog_item.h" />
     <ClInclude Include="include\vcc\utils\cartridge_loader.h" />
+    <ClInclude Include="include\vcc\utils\detail\location_class_id.h" />
+    <ClInclude Include="include\vcc\utils\exception.h" />
+    <ClInclude Include="include\vcc\utils\resource_location.h" />
     <ClInclude Include="include\vcc\utils\disk_image_loader.h" />
     <ClInclude Include="include\vcc\utils\basic_guid.h" />
     <ClInclude Include="include\vcc\utils\noop_mutex.h" />

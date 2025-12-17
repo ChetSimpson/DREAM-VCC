@@ -18,14 +18,21 @@ This file is part of VCC (Virtual Color Computer).
     along with VCC (Virtual Color Computer).  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "defines.h"
+#include <vcc/utils/resource_location.h>
 #include <iostream>
+#include <filesystem>
 
 void LoadConfig(SystemState *);
 void InitSound();
-void LoadModule();
 unsigned char WriteIniFile();
 unsigned char ReadIniFile();
 void GetIniFilePath( char *);
+std::string GetIniFilePath();
+
+std::string GetCartridgeLocation();
+void ClearStartupCartridge();
+void SetStartupCartridge(const ::vcc::utils::resource_location& path);
+
 void UpdateConfig ();
 void UpdateSoundBar(const unsigned int *,unsigned int);
 void UpdateTapeCounter(unsigned int,unsigned char,bool force = false);
@@ -59,7 +66,8 @@ void OpenTapeConfig();
 void OpenBitBangerConfig();
 
 // For tcc1014mmu to load coco3 rom
-void GetExtRomPath(char *);
+bool GetUseCustomSystemRom();
+std::filesystem::path GetCustomSystemRomPath();
 
 #endif
 

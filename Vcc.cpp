@@ -80,13 +80,13 @@ This file is part of VCC (Virtual Color Computer).
 #include "IDisplayDebug.h"
 #endif
 #include "menu_populator.h"
+#include <vcc/utils/cartridge_catalog.h>
 
 using namespace VCC;
 
 static HANDLE hout=nullptr;
 
 SystemState EmuState;
-static bool DialogOpen=false;
 static unsigned char AutoStart=1;
 static unsigned char Qflag=0;
 static unsigned char Pflag=0;
@@ -102,7 +102,6 @@ void SoftReset();
 void LoadIniFile();
 void SaveConfig();
 unsigned __stdcall EmuLoop(HANDLE hEvent);
-unsigned __stdcall CartLoad(void *);
 void (*CPUInit)()=nullptr;
 int  (*CPUExec)( int)=nullptr;
 void (*CPUReset)()=nullptr;
@@ -118,6 +117,8 @@ void raise_saved_keys();
 void SetupClock();
 HMENU GetConfMenu();
 void CALLBACK update_status(HWND, UINT, UINT_PTR, DWORD);
+static void InsertRomPakCartridge();
+static void InsertCartridge(_beginthreadex_proc_type proc);
 
 // Globals
 static 	HANDLE hEMUThread ;
@@ -125,6 +126,15 @@ static	HANDLE hEMUQuit;
 
 constexpr auto first_cartridge_menu_id = 5000;
 constexpr auto last_cartridge_menu_id = 5999;
+
+struct menu_bar_indexes
+{
+	static const auto control_menu = 3u;
+	static const auto cartridge_menu = 4u;
+};
+
+constexpr auto first_select_cartridge_menu_id = 6000;
+constexpr auto last_select_cartridge_menu_id = 6099;
 
 // Function key overclocking flag
 //unsigned char OverclockFlag = 1;
@@ -135,6 +145,9 @@ static unsigned char FlagEmuStop=TH_RUNNING;
 
 bool IsShiftKeyDown();
 
+static void ProcessSelectDeviceCartridgeMenuItem(const vcc::utils::cartridge_catalog::item_type& catalog_item);
+static vcc::utils::cartridge_catalog::item_container_type cartridge_menu_catalog_items;
+static void LoadStartupCartridge();
 
 //static CRITICAL_SECTION  FrameRender;
 /*--------------------------------------------------------------------------*/
@@ -171,7 +184,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 	}
 
 	InitSound();
-	LoadModule();
+	LoadStartupCartridge();
 	SetClockSpeed(1);	//Default clock speed .89 MHZ	
 	BinaryRunning = true;
 	EmuState.EmulationRunning=AutoStart;
@@ -252,7 +265,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 	CloseHandle( hEMUThread ) ;
 	CloseScreen();
 	timeEndPeriod(1);
-	UnloadDll();
+	PakEjectCartridge(false);
 	WriteIniFile(); //Save Any changes to ini File
 	return Msg.wParam;
 }
@@ -261,7 +274,7 @@ void CloseApp()
 {
 	BinaryRunning = false;
 	SoundDeInit();
-	UnloadDll();
+	PakEjectCartridge(false);
 }
 
 void set_menu_item_text(HMENU menu, UINT id, std::string text, std::string hotkey)
@@ -298,9 +311,29 @@ void UpdateControlMenu(HMENU menu)
 		// FIXME-CHET: QUERY SHIT!
 		SetMonitorType(QUERY) == 0 ? "Switch to RGB Display" : "Switch to Composite Display",
 		"F6");
+
+	set_menu_item_text(
+		menu,
+		ID_CONTROL_TOGGLE_THROTTLE,
+		// FIXME-CHET: Magic number returned by setmonitortype should be enum
+		// FIXME-CHET: QUERY SHIT!
+		SetSpeedThrottle(QUERY) == 0 ? "Enable Speed Throttle" : "Disable Speed Throttle",
+		"F8");
+
+	// FIXME-CHET: We should probably just iterate all items and submenus and have
+	// a container that maps ids to update functions.
+	const auto overclock_menu(GetSubMenu(menu, GetMenuItemCount(menu) - 1));
+	if (overclock_menu != nullptr)
+	{
+		set_menu_item_text(
+			overclock_menu,
+			ID_CONTROL_TOGGLE_OVERCLOCK,
+			EmuState.OverclockFlag == false ? "Enable CPU Overclocking" : "Disable CPU Overclocking",
+			"Shift+F8");
+	}
 }
 
-void UpdateCartridgeMenu(HMENU menu)
+[[nodiscard]] std::vector<vcc::utils::cartridge_catalog::item_type> UpdateCartridgeMenu(HMENU menu)
 {
 	while (GetMenuItemCount(menu) > 0)
 	{
@@ -309,15 +342,41 @@ void UpdateCartridgeMenu(HMENU menu)
 
 	::vcc::ui::menu::menu_builder builder;
 	builder.add_root_submenu("Cartridge Port");
+
+	builder.add_submenu_item(ID_INSERT_ROMPAK_CARTRIDGE - first_cartridge_menu_id, "Insert ROM Pak Catridge...");
+	//builder.add_submenu_item(ID_CARTRIDGE_INSERT_ROM - first_cartridge_menu_id, "Recently used ROM Paks", nullptr, true);
+	using item_type = vcc::utils::cartridge_catalog::item_type;
+
+	const auto catalog_items(cartridge_catalog_.copy_items_ordered());
+	
+	if (!catalog_items.empty())
+	{
+		builder.add_submenu_separator();
+
+		auto cartridgeSelectMenuItemId(first_select_cartridge_menu_id);
+		for(auto& item : catalog_items)
+		{
+			bool disabled = cartridge_catalog_.is_loaded(item.id);
+			// HACK: See above comment.
+			builder.add_submenu_item(
+				cartridgeSelectMenuItemId - first_cartridge_menu_id,
+				"Insert " + item.name,
+				{},
+				disabled);
+
+			++cartridgeSelectMenuItemId;
+		}
+	}
+
 	if (const auto& name(PakGetName()); !name.empty())
 	{
+		builder.add_submenu_separator();
 		// HACK: We subtract first_cartridge_menu_id from the id here because it gets 
 		// added to each of the id's in the item list to virtualize them. Since this
 		// id shouldn't be virtualized we hack it here to cheat,
-		builder.add_submenu_item(ID_CARTRIDGE_EJECT - first_cartridge_menu_id, "Eject " + name);
+		builder.add_submenu_item(ID_EJECT_CARTRIDGE - first_cartridge_menu_id, "Eject " + name);
 	}
-	// HACK: See above comment.
-	builder.add_submenu_item(ID_CARTRIDGE_INSERT - first_cartridge_menu_id, "Insert Cartridge or ROM Pak");
+
 
 	if (const auto& menu_items(PakGetMenuItems()); !menu_items.empty())
 	{
@@ -330,6 +389,8 @@ void UpdateCartridgeMenu(HMENU menu)
 	builder
 		.release_items()
 		.accept(menu_item_visitor);
+
+	return catalog_items;
 }
 
 
@@ -353,15 +414,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case WM_INITMENUPOPUP:
 		{
 			const auto menu(GetMenu(hWnd));
-			const auto menu_opening(reinterpret_cast<HMENU>(wParam));
-			// FIXME-CHET: magic number for menu index. find some place to put the symbolic
-			if (menu_opening == GetSubMenu(menu, 4))
+			
+			if (const auto menu_opening(reinterpret_cast<HMENU>(wParam));
+				menu_opening == GetSubMenu(menu, menu_bar_indexes::cartridge_menu))
 			{
-				UpdateCartridgeMenu(menu_opening);
+				cartridge_menu_catalog_items = UpdateCartridgeMenu(menu_opening);
 			}
-
-			// FIXME-CHET: magic number for menu index. find some place to put the symbolic
-			else if (menu_opening == GetSubMenu(menu, 3))
+			else if (menu_opening == GetSubMenu(menu, menu_bar_indexes::control_menu))
 			{
 				UpdateControlMenu(menu_opening);
 			}
@@ -385,18 +444,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			wmId    = LOWORD(wParam);
 			wmEvent = HIWORD(wParam);
 
-			// Parse the menu selections:
-			
-			if (wmId == ID_CARTRIDGE_INSERT)
-			{
-				LoadPack();
-			}
-			if (wmId == ID_CARTRIDGE_EJECT)
-			{
-				UnloadPack();
-			}
-
-
 			// Check if ID is in cartridge menu range
 			if (wmId >= first_cartridge_menu_id && wmId <= last_cartridge_menu_id)
 			{
@@ -404,8 +451,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 			}
 
+			if (wmId >= first_select_cartridge_menu_id && wmId <= last_select_cartridge_menu_id)
+			{
+				wmId -= first_select_cartridge_menu_id;
+				if (static_cast<std::size_t>(wmId) < cartridge_menu_catalog_items.size())
+				{
+					ProcessSelectDeviceCartridgeMenuItem(cartridge_menu_catalog_items[wmId]);
+				}
+
+				break;
+			}
+
 			switch (wmId)
 			{	
+				case ID_INSERT_ROMPAK_CARTRIDGE:
+					InsertRomPakCartridge();
+					break;
+
+				case ID_EJECT_CARTRIDGE:
+					PakEjectCartridge(true);
+					ClearStartupCartridge();
+					break;
+
+
 				case IDM_USER_WIKI:
 					ShellExecute(nullptr, "open",
 								 "https://github.com/VCCE/VCC/wiki/UserGuide",
@@ -663,8 +731,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				case DIK_F10:
 					if (EmuState.FullScreen)
 					{
-						// FIXME-CHET: magic number for menu index
-						if (const HMENU hMenu(IsShiftKeyDown() ? GetConfMenu() : GetSubMenu(GetMenu(hWnd), 3));
+						if (const HMENU hMenu(IsShiftKeyDown()
+											  ? GetConfMenu()
+											  : GetSubMenu(GetMenu(hWnd), menu_bar_indexes::control_menu));
 							hMenu != nullptr)
 						{
 							RECT r;
@@ -935,6 +1004,7 @@ BOOL CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM /*lParam*/)
 	{
 		case WM_INITDIALOG:
 			SendDlgItemMessage(hDlg,IDC_TITLE,WM_SETTEXT,0,(LPARAM)(LPCSTR)g_szAppName);
+			CenterDialog(hDlg);
 			return TRUE;
 		case WM_CLOSE:
 			EndDialog(hDlg, LOWORD(wParam));
@@ -1166,23 +1236,7 @@ unsigned __stdcall EmuLoop(HANDLE hEvent)
 	return 0;
 }
 
-void LoadPack()
-{
-	unsigned threadID;
-	if (DialogOpen)
-		return;
-	DialogOpen=true;
-	_beginthreadex( nullptr, 0, &CartLoad, CreateEvent( nullptr, FALSE, FALSE, nullptr ), 0, &threadID );
-}
 
-unsigned __stdcall CartLoad(void* /*Dummy*/)
-{
-	PakLoadCartridgeUI();
-	EmuState.EmulationRunning=TRUE;
-	DialogOpen=false;
-
-	return 0;
-}
 
 void FullScreenToggle()
 {
@@ -1221,3 +1275,98 @@ bool IsShiftKeyDown()
   return (GetKeyState(VK_SHIFT) & 0x8000) != 0;
 }
 
+
+
+static void InsertRomPakCartridge()
+{
+	SetThreadDescription(GetCurrentThread(), L"** ROM Pak Cartridge Loader UI Thread");
+
+	const auto insert_rom_cartridge = [](const auto& filename)
+	{
+		const auto result(PakInsertRom(filename));
+
+		if (result == vcc::utils::cartridge_loader_status::success)
+		{
+			SetStartupCartridge(filename);
+			PakSetLastAccessedRomPakPath(filename.parent_path());
+		}
+
+		return result;
+	};
+
+	::vcc::utils::select_rompak_cartridge_file(
+		GetActiveWindow(),
+		"Insert ROM Pak Cartridge",
+		PakGetLastAccessedRomPakPath(),
+		insert_rom_cartridge);
+}
+
+static void ProcessSelectDeviceCartridgeMenuItem(const vcc::utils::cartridge_catalog::item_type& catalog_item)
+{
+	if (const auto result(PakInsertCartridge(catalog_item.id));
+		result != ::vcc::utils::cartridge_loader_status::success)
+	{
+		auto error_string(::vcc::utils::load_error_string(result) + "\n\n" + catalog_item.name);
+
+		MessageBox(
+			EmuState.WindowHandle,
+			error_string.c_str(),
+			"Load Error",
+			MB_OK | MB_ICONERROR);
+
+		return;
+	}
+
+	SetStartupCartridge(catalog_item.id);
+}
+
+static void LoadStartupCartridge()
+{
+	static const auto default_error_message(
+		"Unable to insert cartridge. The cartridge location stored in the settings is in an invalid or unknown format.\n"
+		"\n"
+		"The cartridge location will be reset.");
+	static const auto error_title("Startup Error - Unable To Insert Cartridge");
+
+
+	auto location_text(GetCartridgeLocation());
+	if (location_text.empty())
+	{
+		return;
+	}
+
+	std::string error_message;
+
+	if (const auto optional_location(::vcc::utils::resource_location::from_string(location_text));
+		optional_location.has_value())
+	{
+		const auto& location(optional_location.value());
+
+		std::optional<::vcc::utils::cartridge_loader_status> insert_result;
+		if (location.is_path())
+		{
+			insert_result = PakInsertRom(location.path());
+		}
+		else if (location.is_guid())
+		{
+			insert_result = PakInsertCartridge(location.guid());
+		}
+
+		if (insert_result.has_value())
+		{
+			if (*insert_result == ::vcc::utils::cartridge_loader_status::success)
+			{
+				return;
+			}
+
+			error_message = ::vcc::utils::load_error_string(*insert_result);
+		}
+	}
+
+	MessageBox(
+		EmuState.WindowHandle,
+		error_message.empty() ? default_error_message : error_message.c_str(),
+		error_title,
+		MB_OK | MB_ICONERROR);
+	ClearStartupCartridge();
+}

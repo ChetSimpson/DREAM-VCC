@@ -17,8 +17,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "vcc/detail/exports.h"
+#include <vcc/utils/cartridge_catalog.h>
 #include <filesystem>
 #include <string>
+#include <functional>
 #include <mutex>
 
 
@@ -37,6 +39,10 @@ namespace vcc::bus
 		using path_type = std::filesystem::path;
 		/// @brief Type alias for the cartridge port mutex.
 		using catridge_mutex_type = std::recursive_mutex;
+		/// @brief Type alias for the cartridge catalog.
+		using catalog_type = ::vcc::utils::cartridge_catalog;
+		/// @copydoc catalog_type::guid_type.
+		using guid_type = catalog_type::guid_type;
 
 
 	public:
@@ -56,12 +62,27 @@ namespace vcc::bus
 		/// @return A path to where system ROMS are stored.
 		virtual [[nodiscard]] path_type system_rom_path() const = 0;
 
+		/// @brief Retrieves the path to where Device Cartridges are stored.
+		/// 
+		/// This function returns a path to where Device Cartridges are stored.
+		/// 
+		/// @return A path to where Device Cartridges are stored.
+		virtual [[nodiscard]] path_type system_cartridge_path() const = 0;
+
 		/// @brief Retrieve the cartridge plugin mutex.
 		/// 
 		/// Retrieve the mutex used to gain exclusive access to cartridge plugins.
 		/// 
 		/// @return The cartridge mutex.
 		virtual [[nodiscard]] catridge_mutex_type& driver_mutex() const = 0;
+
+		/// @brief Retrieve the system wide cartridge catalog.
+		/// 
+		/// Retrieves the system wide cartridge catalog providing details about the cartridges
+		/// installed.
+		/// 
+		/// @return A reference to the system wide cartridge catalog.
+		virtual const catalog_type& cartridge_catalog() const = 0;
 	};
 
 }

@@ -16,31 +16,34 @@
 //	VCC (Virtual Color Computer). If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
-#include <vcc/detail/exports.h>
-#include <vcc/utils/basic_guid.h>
-#include <string>
-#include <array>
+/// @file
+///
+/// Contains definitions for disk errors.
+#include <cstddef>
 
 
-namespace vcc::bus
+namespace vcc::media
 {
 
-	/// @brief Defines the same of a cartridge catalog item
-	struct cartridge_catalog_item
+	/// @brief Defines a set of status codes returned from disk drive and disk image
+	/// related functions.
+	enum class disk_error_id
 	{
-		/// @brief Type alias for variable length strings.
-		using string_type = std::string;
-		/// @brief Type alias for file paths.
-		using path_type = std::string;
-		/// @brief Type alias for a globally unique identifier.
-		using guid_type = ::vcc::utils::basic_guid;
-
-		/// @brief The unique identifier of the cartridge.
-		guid_type	id;
-		/// @brief The human friendly name of the cartridge.
-		string_type name;
-		/// @brief The filename, without the path, of the cartridge.
-		string_type filename;
+		/// @brief The function was successful.
+		success,
+		/// @brief The disk drive or image is empty.
+		empty,
+		/// @brief The specified head parameter is not valid for the operation or does
+		/// not exist.
+		invalid_head,
+		/// @brief The specified track parameter is not valid for the operation or does
+		/// not exist.
+		invalid_track,
+		/// @brief The specified sector parameter is not valid for the operation or does
+		/// not exist.
+		invalid_sector,
+		/// @brief The operation failed because the disk is write protected.
+		write_protected
 	};
 
 }
