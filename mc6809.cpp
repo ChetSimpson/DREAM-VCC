@@ -69,6 +69,7 @@ static unsigned char postbyte=0;
 static short unsigned postword=0;
 static signed char *spostbyte=(signed char *)&postbyte;
 static signed short *spostword=(signed short *)&postword;
+static char InInterupt=0;
 static std::vector<unsigned short> CPUBreakpoints;
 static std::vector<unsigned short> CPUTraceTriggers;
 static int HaltedInsPending = 0;
@@ -359,9 +360,9 @@ int MC6809Exec(int CycleFor)
 		if (PendingInterupts) {
 			if (PendingInterupts & 4)
 				cpu_nmi();
-			else if (PendingInterupts & 2)
+			if (PendingInterupts & 2)
 				cpu_firq();
-			else if (PendingInterupts & 1) {
+			if (PendingInterupts & 1) {
 				if (IRQWaiter==0)	// This is needed to fix timing problems
 					cpu_irq();
 				else
@@ -1033,6 +1034,7 @@ void Do_Opcode(int CycleFor)
 	case RTI_I: //3B
 		set_cc_flags(MemRead8(s.Reg++));
 		CycleCounter+=6;
+		InInterupt=0;
 		if (cc[E])
 		{
 			A_REG=MemRead8(s.Reg++);
@@ -3260,6 +3262,7 @@ void cpu_firq()
 			EmuState.Debugger.TraceCaptureInterruptServicing(FIRQ, CycleCounter, MC6809GetState());
 		}
 
+		InInterupt=1; //Flag to indicate FIRQ has been asserted
 		cc[E]=0; // Turn E flag off
 		MemWrite8( pc.B.lsb,--s.Reg);
 		MemWrite8( pc.B.msb,--s.Reg);
@@ -3289,7 +3292,9 @@ void cpu_firq()
 
 void cpu_irq()
 {
-	if (!cc[I])
+	if (InInterupt==1) //If FIRQ is running postpone the IRQ
+		return;
+	if ((!cc[I]) )
 	{
 		if (EmuState.Debugger.IsTracing())
 		{
@@ -3398,6 +3403,7 @@ void MC6809AssertInterupt(unsigned char Interupt,unsigned char waiter)// 4 nmi 2
 void MC6809DeAssertInterupt(unsigned char Interupt)// 4 nmi 2 firq 1 irq
 {
 	PendingInterupts=PendingInterupts & ~(1<<(Interupt-1));
+	InInterupt=0;
 	return;
 }
 

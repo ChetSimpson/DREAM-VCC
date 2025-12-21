@@ -135,6 +135,7 @@ static unsigned char postbyte=0;
 static short unsigned postword=0;
 static signed char *spostbyte=(signed char *)&postbyte;
 static signed short *spostword=(signed short *)&postword;
+static char InInterupt=0;
 static int gCycleFor;
 
 static std::vector<unsigned short> CPUBreakpoints;
@@ -4207,6 +4208,7 @@ void Rti_I()
 { //3B
 	setcc(MemRead8(S_REG++));
 	CycleCounter+=6;
+	InInterupt=0;
 	if (cc[E])
 	{
 		A_REG=MemRead8(S_REG++);
@@ -7041,9 +7043,11 @@ int HD6309Exec(int CycleFor)
 		{
 			if (PendingInterupts & 4)
 			cpu_nmi();
-			else if (PendingInterupts & 2)
+
+			if (PendingInterupts & 2)
 			cpu_firq();
-			else if (PendingInterupts & 1)
+
+			if (PendingInterupts & 1)
 			{
 				if (IRQWaiter == 0)	// This is needed to fix a subtle timming problem
 					cpu_irq();		// It allows the CPU to see $FF03 bit 7 high before
@@ -7126,6 +7130,7 @@ void cpu_firq()
 		{
 			EmuState.Debugger.TraceCaptureInterruptServicing(FIRQ, CycleCounter, HD6309GetState());
 		}
+		InInterupt=1; //Flag to indicate FIRQ has been asserted
 		switch (md[FIRQMODE])
 		{
 		case 0:
@@ -7181,7 +7186,9 @@ void cpu_firq()
 
 void cpu_irq()
 {
-	if (!cc[I])
+	if (InInterupt==1) //If FIRQ is running postpone the IRQ
+		return;			
+	if ((!cc[I]) )
 	{
 	if (EmuState.Debugger.IsTracing())
 		{
@@ -7567,6 +7574,7 @@ void HD6309AssertInterupt(unsigned char Interupt,unsigned char waiter)// 4 nmi 2
 void HD6309DeAssertInterupt(unsigned char Interupt)// 4 nmi 2 firq 1 irq
 {
 	PendingInterupts=PendingInterupts & ~(1<<(Interupt-1));
+	InInterupt=0;
 	return;
 }
 
