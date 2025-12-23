@@ -50,7 +50,13 @@ namespace vcc::cartridges::fd502
 		bool on_init_dialog() override;
 
 		/// @inheritdoc
+		void on_ok() override;
+
+		/// @inheritdoc
 		INT_PTR on_command(WPARAM wParam, LPARAM lParam) override;
+
+		/// @brief Updates the enabled state of controls based on settings.
+		void update_control_states();
 
 
 	private:
@@ -61,12 +67,16 @@ namespace vcc::cartridges::fd502
 		/// @brief Defines default values for disk creation settings.
 		struct defaults
 		{
-			/// @brief Defines the default disk image layout used to format the disk image.
+			/// @brief The disk image layout used to format the disk image.
 			static const auto image_layout = disk_image_format_type::jvc;
 			/// @brief Defines the default setting for creating double sided disk images.
 			static const auto double_sided = false;
-			/// @brief Defines the default number of tracks.
-			static const auto track_count = 35;
+			/// @brief The number of tracks.
+			static const auto track_count = 35u;
+			/// @brief The number of sectors per track.
+			static const auto sector_count = 18u;
+			/// @brief The number of bytes per sector.
+			static const auto sector_size = 256u;
 		};
 
 		/// @brief Table used for converting UI control identifiers to disk image format

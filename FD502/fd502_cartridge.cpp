@@ -314,8 +314,7 @@ namespace vcc::cartridges::fd502
 		insert_disk_dialog.set_title(std::format("Insert Disk Into Drive {}", drive_id))
 			.set_initial_directory(configuration_->disk_image_directory())
 			.set_selection_filter({ {"Disk Images", {"*.dsk", "*.os9"} } })
-			.set_default_extension("dsk")
-			.append_flags(OFN_PATHMUSTEXIST);
+			.set_default_extension("dsk");
 		if (insert_disk_dialog.do_modal_load_dialog(h_own))
 		{
 			const auto& selected_path(insert_disk_dialog.selected_path());
