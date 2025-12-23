@@ -51,7 +51,6 @@
 #define IDD_BPLISTDIALOG                176
 #define IDD_EXPORT                      177
 #define IDB_FONT_CONSOLA                178
-#define IDC_MUTE                        1003
 #define IDC_THROTTLE                    1004
 #define IDC_ARTIFACTS                   1005
 #define IDC_128K                        1006
@@ -389,10 +388,9 @@
 #define IDC_EDIT_RANGE_BEG              2152
 #define IDC_EDIT_RANGE_END              2153
 #define IDC_EDIT_RANGE_SEP              2154
-#define IDM_USER_WIKI                   40001
-#define ID_FILE_EXIT                    40002
-#define IDM_HELP_ABOUT                  40003
-#define ID_FILE_RUN                     40004
+#define ID_DREAM_EXIT                   40001
+#define ID_HELP_OPEN_USERGUIDE          40002
+#define ID_HELP_ABOUT                   40003
 #define ID_CARTS_LOAD                   40006
 #define ID_DISKS_DRIVE0                 40007
 #define ID_DISKS_DRIVE1                 40008
@@ -447,6 +445,14 @@
 #define ID_CONTROL_OVERCLOCK_INCREASE   40068
 #define ID_CONTROL_OVERCLOCK_DECREASE   40069
 #define ID_CONTROL_SWAP_JOYSTICKS       40070
+#define ID_CONTROL_TOGGLE_MUTE_AUDIO    40071
+#define ID_CONTROL_TOGGLE_POWER         40072
+#define ID_CONTROL_RESET                40073
+#define ID_HELP_REPORTISSUE             40074
+#define ID_TOOLS_RS                     40075
+#define ID_TOOLS_OS                     40076
+#define ID_TOOLS_RSDOS_DISKIMAGETOOL    40077
+#define ID_TOOLS_OS9_DISKIMAGETOOL      40078
 #define ID_BREAKPOINTS                  43332
 #define ID_CONFIGURE_OPTIONS            65535
 
@@ -455,7 +461,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        180
-#define _APS_NEXT_COMMAND_VALUE         40071
+#define _APS_NEXT_COMMAND_VALUE         40079
 #define _APS_NEXT_CONTROL_VALUE         2155
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

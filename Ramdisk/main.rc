@@ -69,12 +69,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Team DREAM!"
             VALUE "FileDescription", "RAM Buffer / RAM Disk Cartridge"
-            VALUE "FileVersion", "0.0.0.1"
+            VALUE "FileVersion", "0.0.1.0"
             VALUE "InternalName", "RAMBuffer"
             VALUE "LegalCopyright", "Copyright � 2007"
             VALUE "OriginalFilename", "ramdisk.dll"
-            VALUE "ProductName", "DREAM-VCC - The Tandy Color Computer 3 Emulator"
-            VALUE "ProductVersion", "0.0.0.1"
+            VALUE "ProductName", "DREAM - The Tandy Color Computer 3 Emulator"
+            VALUE "FileVersion", "0.0.1.0"
         END
     END
     BLOCK "VarFileInfo"

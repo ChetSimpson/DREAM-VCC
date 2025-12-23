@@ -237,9 +237,6 @@
     <ClInclude Include="BuildConfig.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="CpuCommon.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="interrupts.h">
       <Filter>Headers</Filter>
     </ClInclude>

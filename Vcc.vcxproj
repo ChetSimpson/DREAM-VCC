@@ -14,7 +14,7 @@
     <SccProjectName />
     <SccLocalPath />
     <ProjectGuid>{822E50CF-A326-4B7A-A2CA-2A4C4055FC34}</ProjectGuid>
-    <ProjectName>vcc</ProjectName>
+    <ProjectName>dream</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

@@ -133,7 +133,7 @@ extern char StickName[MAXSTICKS][STRLEN];
 
 static unsigned int TapeCounter=0;
 static unsigned char Tmode=STOP;
-char Tmodes[4][10]={"STOP","PLAY","REC","STOP"};
+char Tmodes[4][10]={"STOPPED","PLAYING","RECORDING","STOPPED"};
 static int NumberOfSoundCards=0;
 
 constexpr auto MAXSOUNDCARDS = 12u;
@@ -176,9 +176,10 @@ void LoadConfig(SystemState *LCState)
 		OutputDebugString(AppDataPath);
 	strcpy(CurrentConfig.PathtoExe,ExecDirectory);
 
-	strcat(AppDataPath, "\\DREAM-VCC");
+	strcat(AppDataPath, "\\HyperTech\\DREAM");
 
-	if (_mkdir(AppDataPath) != 0) {
+	if (!std::filesystem::create_directories(AppDataPath))
+	{
 		OutputDebugString("Unable to create VCC config folder.");
 	}
 
@@ -825,7 +826,6 @@ LRESULT CALLBACK AudioConfig(HWND hDlg, UINT message, WPARAM wParam, LPARAM /*lP
 {
 	int Index;
 	static STRConfig tmpcfg;
-	WPARAM bstate;
 	switch (message) {
 	case WM_INITDIALOG:
 		tmpcfg = CurrentConfig;
@@ -844,11 +844,6 @@ LRESULT CALLBACK AudioConfig(HWND hDlg, UINT message, WPARAM wParam, LPARAM /*lP
 		for (Index=0;Index<NumberOfSoundCards;Index++)
 			SendDlgItemMessage(hDlg,IDC_SOUNDCARD,CB_ADDSTRING,
 			                  (WPARAM)0,(LPARAM)SoundCards[Index].CardName);
-
-//		In coco3.cpp audio rate is forced to 0 (mute) or 3 (44100)
-//		Rate dropdown has been replaced with a mute check box
-		bstate = (tmpcfg.AudioRate==0) ? BST_CHECKED : BST_UNCHECKED;
-		SendDlgItemMessage(hDlg,IDC_MUTE,BM_SETCHECK,bstate,0);
 
 		// Sound device selection
 		tmpcfg.SndOutDev=0;
@@ -869,11 +864,9 @@ LRESULT CALLBACK AudioConfig(HWND hDlg, UINT message, WPARAM wParam, LPARAM /*lP
 		case IDAPPLY:
 			tmpcfg.SndOutDev =
 				(unsigned char) SendDlgItemMessage(hDlg,IDC_SOUNDCARD,CB_GETCURSEL,0,0);
-			tmpcfg.AudioRate =
-				(SendDlgItemMessage(hDlg,IDC_MUTE,BM_GETCHECK,0,0) == BST_CHECKED)? 0:3;
 
-			if ( (CurrentConfig.SndOutDev != tmpcfg.SndOutDev) |
-			     (CurrentConfig.AudioRate != tmpcfg.AudioRate)) {
+			if (CurrentConfig.SndOutDev != tmpcfg.SndOutDev)
+			{
 				SoundInit ( EmuState.WindowHandle,
 				            SoundCards[tmpcfg.SndOutDev].Guid,
 				            tmpcfg.AudioRate);
@@ -1653,4 +1646,23 @@ std::filesystem::path GetCustomSystemRomPath()
 bool GetUseCustomSystemRom()
 {
 	return CurrentConfig.UseExtCocoRom != 0;
+}
+
+void SetAudioMute(bool is_muted)
+{
+	// FIXME-CHET: Magic numbers need to freaking go away.
+	// In coco3.cpp audio rate is forced to 0 (mute) or 3 (44100)
+	CurrentConfig.AudioRate = is_muted ? 0: 3;
+
+	// Reinitialize the sound so that the new audio rate takes effect.
+	SoundInit(
+		EmuState.WindowHandle,
+		SoundCards[CurrentConfig.SndOutDev].Guid,
+		CurrentConfig.AudioRate);
+}
+
+bool GetIsAudioMuted()
+{
+	// FIXME-CHET: Magic numbers need to freaking go away.
+	return CurrentConfig.AudioRate == 0;
 }

@@ -69,5 +69,8 @@ void OpenBitBangerConfig();
 bool GetUseCustomSystemRom();
 std::filesystem::path GetCustomSystemRomPath();
 
+void SetAudioMute(bool is_muted);
+bool GetIsAudioMuted();
+
 #endif
 
