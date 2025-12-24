@@ -59,7 +59,6 @@ Source: ".\system-roms\orch90.rom"; DestDir: "{app}\system-roms"; Flags: ignorev
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 Name: "{group}\Uninstall DREAM"; Filename: "{uninstallexe}"
 Name: "{group}\DREAM!"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppExeName}"; IconIndex: 0
