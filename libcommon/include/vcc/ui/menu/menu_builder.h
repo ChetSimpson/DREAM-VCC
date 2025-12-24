@@ -63,6 +63,32 @@ namespace vcc::ui::menu
 		/// @return A reference to the builder.
 		LIBCOMMON_EXPORT menu_builder& clear();
 
+		/// @brief Add a selectable menu item to the end of the root or current sub menu.
+		/// 
+		/// @param in_root Specifics if the item should be added to the root or sub menu.
+		/// If this value is true, the item is added to the root menu.
+		/// @param id The identifier to send when the menu item is clicked.
+		/// @param text The menu item text.
+		/// @param icon An optional item to display next to the menu item.
+		/// @param disabled Flag indicating if the menu item is disabled. If this flag is
+		/// `true` the item should be not be selectable by the user and not dispatched.
+		/// 
+		/// @return A reference to the builder.
+		LIBCOMMON_EXPORT menu_builder& add_item(
+			bool in_root,
+			item_id_type id,
+			string_type text,
+			icon_type icon = nullptr,
+			bool disabled = false);
+
+		/// @brief Add a separator to the end of the root or current sub menu.
+		/// 
+		/// @param in_root Specifics if the separator should be added to the root or
+		/// sub menu. If this value is true, the item is added to the root menu.
+		/// 
+		/// @return A reference to the builder.
+		LIBCOMMON_EXPORT menu_builder& add_separator(bool in_root);
+
 		/// @brief Add a sub-menu to the end of the root menu.
 		/// 
 		/// This adds a sub-menu to the root menu and makes it the active sub-menu

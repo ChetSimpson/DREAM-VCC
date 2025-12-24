@@ -31,9 +31,6 @@ namespace vcc::cartridges::fd502::detail
 		jvc,
 		/// @brief ?Virtual Disk?
 		vdk,
-		/// @brief Raw format arranged by track and sector ordered sequentially formatted
-		/// for OS-9.
-		os9,
 		/// @brief Rich disk format that includes sector records and other detailed data.
 		dmk
 	};

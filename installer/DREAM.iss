@@ -6,7 +6,7 @@
 #define MyAppVersion "0.1.0.0"
 #define MyAppPublisher "Team DREAM!"
 #define MyAppURL "https://github.com/ChetSimpson/DREAM-VCC"
-#define MyAppExeName "vcc.exe"
+#define MyAppExeName "dream.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -25,12 +25,13 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
 OutputDir=..\build\installer
-OutputBaseFilename=mysetup
+OutputBaseFilename=dream-installer
 SetupIconFile=..\resources\icon1.ico
 SolidCompression=yes
 WizardStyle=modern dynamic
 ; Specifies the path to your license file
 LicenseFile=.\LicenseAgreement.txt
+DefaultGroupName=DREAM Emulator
 
 
 [Languages]
@@ -42,6 +43,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "..\build\Win32\Release\bin\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\Win32\Release\bin\libcommon.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\extras\wimgtool-os9.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\extras\wimgtool-rsdos.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\Win32\Release\bin\cartridges\becker.dll"; DestDir: "{app}\cartridges"; Flags: ignoreversion
 Source: "..\build\Win32\Release\bin\cartridges\fd502.dll"; DestDir: "{app}\cartridges"; Flags: ignoreversion
 Source: "..\build\Win32\Release\bin\cartridges\gmc.dll"; DestDir: "{app}\cartridges"; Flags: ignoreversion
@@ -58,6 +61,11 @@ Source: ".\system-roms\orch90.rom"; DestDir: "{app}\system-roms"; Flags: ignorev
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{group}\Uninstall DREAM"; Filename: "{uninstallexe}"
+Name: "{group}\DREAM!"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\{#MyAppExeName}"; IconIndex: 0
+Name: "{group}\OS-9 Disk Image Tool"; Filename: "{app}\wimgtool-os9.exe"; IconFilename: "{app}\wimgtool-os9.exe"; IconIndex: 0
+Name: "{group}\RS-DOS Disk Image Tool"; Filename: "{app}\wimgtool-rsdos.exe"; IconFilename: "{app}\wimgtool-rsdos.exe"; IconIndex: 0
+
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent

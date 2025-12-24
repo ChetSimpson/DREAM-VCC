@@ -84,6 +84,18 @@ namespace vcc::ui::menu
 		return *this;
 	}
 
+	menu_builder& menu_builder::add_item(bool in_root, item_id_type id, string_type text, icon_type icon, bool disabled)
+	{
+		return in_root
+			? add_root_item(id, move(text), icon, disabled)
+			: add_submenu_item(id, move(text), icon, disabled);
+	}
+
+	menu_builder& menu_builder::add_separator(bool in_root)
+	{
+		return in_root ? add_root_separator() : add_submenu_separator();
+	}
+
 	menu_builder& menu_builder::add_root_submenu(string_type text, icon_type icon)
 	{
 		add_item(category_type::root_sub_menu, 0, move(text), icon);

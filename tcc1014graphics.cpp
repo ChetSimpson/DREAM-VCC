@@ -10028,6 +10028,8 @@ int GetGraphicsMode() {
 void FlipArtifacts() {
 	if (ColorInvert == 0) { ColorInvert = 1; }
 	else { ColorInvert = 0; }
+
+	// FIXME-CHET: Once this is set there's no way to reset it.
 	UserFlipped = true;
 }
 

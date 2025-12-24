@@ -81,6 +81,7 @@ This file is part of VCC (Virtual Color Computer).
 #endif
 #include "menu_populator.h"
 #include <vcc/utils/cartridge_catalog.h>
+#include <vcc/utils/filesystem.h>
 
 using namespace VCC;
 
@@ -115,10 +116,23 @@ void FullScreenToggle();
 void save_key_down(unsigned char kb_char, unsigned char OEMscan);
 void raise_saved_keys();
 void SetupClock();
-HMENU GetConfMenu();
 void CALLBACK update_status(HWND, UINT, UINT_PTR, DWORD);
 static void InsertRomPakCartridge();
 static void InsertCartridge(_beginthreadex_proc_type proc);
+
+void OnTogglePowerOnState();
+void OnTogglePause();
+void OnToggleMonitorType();
+void OnToggleArtifactColors();
+void OnToggleThrottle();
+void OnToggleOverclocking();
+void OnDecreaseOverclockSpeed();
+void OnIncreaseOverclockSpeed();
+void OnSoftReset();
+void OnHardReset();
+void OnDumpScreenshot();
+void OnToggleShowFullScreenMenu(HWND window);
+void OnStartTool(HWND window, const std::string& tool_name);
 
 // Globals
 static 	HANDLE hEMUThread ;
@@ -129,8 +143,8 @@ constexpr auto last_cartridge_menu_id = 5999;
 
 struct menu_bar_indexes
 {
-	static const auto control_menu = 3u;
-	static const auto cartridge_menu = 4u;
+	static const auto control_menu = 0u;
+	static const auto cartridge_menu = 3u;
 };
 
 constexpr auto first_select_cartridge_menu_id = 6000;
@@ -295,7 +309,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 		case WM_CREATE:
-			SetTimer(hWnd, 100, 15, update_status);
+			SetTimer(hWnd, 100, 10, update_status);
 			break;
 
 		case WM_INITMENUPOPUP:
@@ -307,9 +321,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				cartridge_menu_catalog_items = UpdateCartridgeMenu(menu_opening);
 			}
+
+			// TODO-CHET: This doesn't seem necessary anymore. Need to come up with a
+			// better way of handling this.
 			else if (menu_opening == GetSubMenu(menu, menu_bar_indexes::control_menu))
 			{
-				UpdateControlMenu(menu_opening);
+				UpdateControlMenu(menu);
 			}
 			break;
 		}
@@ -360,85 +377,106 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					ClearStartupCartridge();
 					break;
 
-
-				case IDM_USER_WIKI:
-					ShellExecute(nullptr, "open",
-								 "https://github.com/VCCE/VCC/wiki/UserGuide",
-								 nullptr, nullptr, SW_SHOWNORMAL);
+				case ID_HELP_OPEN_USERGUIDE:
+					ShellExecute(
+						nullptr,
+						"open",
+						"https://github.com/VCCE/VCC/wiki/UserGuide",
+						nullptr,
+						nullptr,
+						SW_SHOWNORMAL);
 					break;
-				case IDM_HELP_ABOUT:
+
+				case ID_HELP_REPORTISSUE:
+					ShellExecute(
+						nullptr,
+						"open",
+						"https://github.com/ChetSimpson/DREAM-VCC/issues",
+						nullptr,
+						nullptr,
+						SW_SHOWNORMAL);
+					break;
+
+
+				case ID_HELP_ABOUT:
 					DialogBox(EmuState.WindowInstance, (LPCTSTR)IDD_ABOUTBOX,
 						hWnd, (DLGPROC)About);
 				    break;
+
 				case ID_AUDIO_CONFIG:
 					OpenAudioConfig();
 				    break;
+
 				case ID_CPU_CONFIG:
 					OpenCpuConfig();
 				    break;
+
 				case ID_DISPLAY_CONFIG:
 					OpenDisplayConfig();
 				    break;
+
 				case ID_KEYBOARD_CONFIG:
 					OpenInputConfig();
 				    break;
+
 				case ID_JOYSTICKS_CONFIG:
 					OpenJoyStickConfig();
 				    break;
+
 				case ID_TAPE_CONFIG:
 					OpenTapeConfig();
 				    break;
+
 				case ID_BITBANGER_CONFIG:
 					OpenBitBangerConfig();
 				    break;
 
-				case ID_FILE_EXIT:
-				case IDOK:
+				case ID_DREAM_EXIT:
 					SendMessage (hWnd, WM_CLOSE, 0, 0);
 					break;
 
-				case ID_FILE_RUN:
-					EmuState.EmulationRunning=TRUE;
-					InvalidateBoarder();
-					break;
-
 				case ID_CONTROL_HARD_RESET:
-					if (EmuState.EmulationRunning)
-						EmuState.ResetPending=2;
+					OnHardReset();
 					break;
 
 				case ID_CONTROL_SOFT_RESET:
-					if (EmuState.EmulationRunning)
-						EmuState.ResetPending=1;
+					OnSoftReset();
 					break;
 
 				case ID_CONTROL_TOGGLE_DISPLAY_TYPE:
-					SetMonitorType(!SetMonitorType(QUERY));
+					OnToggleMonitorType();
 					break;
 
 				case ID_CONTROL_TOGGLE_ARTIFACT_COLORS:
-					FlipArtifacts();
+					OnToggleArtifactColors();
 					break;
 
 				case ID_CONTROL_TOGGLE_THROTTLE:
-					SetSpeedThrottle(!SetSpeedThrottle(QUERY));
+					OnToggleThrottle();
 					break;
 
 				case ID_CONTROL_TOGGLE_OVERCLOCK:
-					SetOverclock(!EmuState.OverclockFlag);
-					SetupClock();
+					OnToggleOverclocking();
 					break;
 
 				case ID_CONTROL_OVERCLOCK_INCREASE:
-					IncreaseOverclockSpeed();
+					OnIncreaseOverclockSpeed();
 					break;
 
 				case ID_CONTROL_OVERCLOCK_DECREASE:
-					DecreaseOverclockSpeed();
+					OnDecreaseOverclockSpeed();
+					break;
+
+				case ID_CONTROL_TOGGLE_POWER:
+					OnTogglePowerOnState();
 					break;
 
 				case ID_CONTROL_TOGGLE_PAUSE:
-					EmuState.Debugger.ToggleRun();
+					OnTogglePause();
+					break;
+
+				case ID_CONTROL_TOGGLE_MUTE_AUDIO:
+					SetAudioMute(!GetIsAudioMuted());
 					break;
 
 				case ID_CONTROL_SWAP_JOYSTICKS:
@@ -493,12 +531,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					VCC::OpenDisassemblerWindow(EmuState.WindowInstance, EmuState.WindowHandle);
 					break;
 
+				case ID_TOOLS_OS9_DISKIMAGETOOL:
+					OnStartTool(hWnd, "wimgtool-os9");
+					break;
+
+				case ID_TOOLS_RSDOS_DISKIMAGETOOL:
+					OnStartTool(hWnd, "wimgtool-rsdos");
+					break;
+
 				default:
 				   return DefWindowProc(hWnd, message, wParam, lParam);
 			}
 			break;
 
 		case WM_SETCURSOR:
+			// We always show a cursor if we are in full screen mode and the window has a
+			// menu set the cursor to the standard arrow.
+			if (EmuState.FullScreen && GetMenu(hWnd) != nullptr)
+			{
+				SetCursor(LoadCursor(nullptr, IDC_ARROW));
+				return TRUE;
+			}
+
 			// Hide mouse cursor
             if ((EmuState.MousePointer != 1) && (LOWORD(lParam) == HTCLIENT)) {
 				SetCursor(nullptr);
@@ -560,112 +614,113 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if (lParam>>30) return 0;
 
 		case WM_KEYDOWN:
-
 			// get key scan code for emulator control keys
-			OEMscan = (unsigned char) ((lParam >> 16) & 0xFF);
-			Extended=(lParam >> 24) & 1;
-			if (Extended && (OEMscan!=DIK_NUMLOCK)) OEMscan += 0x80;
+			OEMscan = (lParam >> 16) & 0xFF;
+			Extended = (lParam >> 24) & 1;
+			if (Extended && (OEMscan != DIK_NUMLOCK))
+			{
+				OEMscan += 0x80;
+			}
 
 			// kb_char = Windows virtual key code
-
-			switch ( OEMscan )
+			if (wParam == VK_PAUSE)
 			{
-				case DIK_F3:
-					DecreaseOverclockSpeed();
+				OnTogglePause();
+				return 0;
+			}
+
+			switch (OEMscan)
+			{
+			case DIK_F3:
+				OnDecreaseOverclockSpeed();
 				break;
 
-				case DIK_F4:
-					IncreaseOverclockSpeed();
+			case DIK_F4:
+				OnIncreaseOverclockSpeed();
 				break;
 
-				case DIK_F5:
-					if ( EmuState.EmulationRunning ) {
-						EmuState.ResetPending = (IsShiftKeyDown()) ? 2 : 1;
-					}
+			case DIK_F5:
+				if (IsShiftKeyDown())
+				{
+					OnHardReset();
+				}
+				else
+				{
+					OnSoftReset();
+				}
 				break;
 
-				case DIK_F6:
-					if (IsShiftKeyDown())
-						FlipArtifacts();
-					else
-						SetMonitorType(!SetMonitorType(QUERY));
+			case DIK_F6:
+				if (IsShiftKeyDown())
+				{
+					OnToggleArtifactColors();
+				}
+				else
+				{
+					OnToggleMonitorType();
+				}
 				break;
 
-				case DIK_F7:
-					if (IsShiftKeyDown())
-						SwapJoySticks();
-					else
-						EmuState.Debugger.ToggleRun();
+			case DIK_F7:
+				if (IsShiftKeyDown())
+				{
+					SwapJoySticks();
+				}
 				break;
 
-				case DIK_F8:
+			case DIK_F8:
+				if (IsShiftKeyDown())
+				{
+					OnToggleOverclocking();
+				}
+				else
+				{
+					OnToggleThrottle();
+				}
+				break;
+
+			case DIK_F9:
+				OnTogglePowerOnState();
+				break;
+
+			case DIK_F10:
+				if (EmuState.FullScreen)
+				{
+					OnToggleShowFullScreenMenu(hWnd);
+				}
+				break;
+
+			case DIK_F11:
+				if (FlagEmuStop == TH_RUNNING)
+				{
 					if (IsShiftKeyDown()) {
-						SetOverclock(!EmuState.OverclockFlag);
-						SetupClock();
-					} else {
-						SetSpeedThrottle(!SetSpeedThrottle(QUERY));
+						SetInfoBand(!SetInfoBand(QUERY));
+						InvalidateBoarder();
 					}
-				break;
-
-				case DIK_F9:
-					EmuState.EmulationRunning=!EmuState.EmulationRunning;
-					if ( EmuState.EmulationRunning )
-						EmuState.ResetPending=2;
 					else
-						SetStatusBarText("",&EmuState);
+					{
+						FlagEmuStop = TH_REQWAIT;
+						EmuState.FullScreen = !EmuState.FullScreen;
+					}
+				}
 				break;
 
-				case DIK_F10:
-					if (EmuState.FullScreen)
-					{
-						if (const HMENU hMenu(IsShiftKeyDown()
-											  ? GetConfMenu()
-											  : GetSubMenu(GetMenu(hWnd), menu_bar_indexes::control_menu));
-							hMenu != nullptr)
-						{
-							RECT r;
-							GetClientRect(hWnd, &r);
-							TrackPopupMenu(
-								hMenu,
-								TPM_CENTERALIGN | TPM_VCENTERALIGN,
-								r.right / 2,
-								r.bottom / 2,
-								0,
-								hWnd,
-								nullptr);
-						}
-					}
-				break;
-				
-				case DIK_F11:
-					if (FlagEmuStop == TH_RUNNING) {
-						if (IsShiftKeyDown()) {
-							SetInfoBand(!SetInfoBand(QUERY));
-							InvalidateBoarder();
-						} else {
-							FlagEmuStop = TH_REQWAIT;
-							EmuState.FullScreen =!EmuState.FullScreen;
-						}
-					}
+			case DIK_F12:
+				if (IsShiftKeyDown())
+				{
+					OnDumpScreenshot();
+				}
 				break;
 
-				case DIK_F12:
-					if (IsShiftKeyDown())
-					{
-						DumpScreenshot();
-					}
-					
+			default:
+				// send shift and other keystrokes to the emulator if it is active
+				if (EmuState.EmulationRunning)
+				{
+					vccKeyboardHandleKey(OEMscan, kEventKeyDown);
+					// Save key down in case focus is lost
+					save_key_down(kb_char, OEMscan);
+				}
 				break;
-
-				default:
-					// send shift and other keystrokes to the emulator if it is active
-					if ( EmuState.EmulationRunning )
-					{
-						vccKeyboardHandleKey(OEMscan, kEventKeyDown);
-						// Save key down in case focus is lost
-						save_key_down(kb_char,OEMscan);
-					}
-					break;
 			}
 
 			return 0;
@@ -1121,22 +1176,6 @@ void FullScreenToggle()
 }
 
 
-HMENU GetConfMenu()
-{
-	static HMENU hMenu = nullptr;
-	if (hMenu == nullptr) {
-		hMenu = CreatePopupMenu();
-		AppendMenu(hMenu,MF_STRING,ID_AUDIO_CONFIG,"Audio");
-		AppendMenu(hMenu,MF_STRING,ID_CPU_CONFIG,"Cpu");
-		AppendMenu(hMenu,MF_STRING,ID_DISPLAY_CONFIG,"Display");
-		AppendMenu(hMenu,MF_STRING,ID_KEYBOARD_CONFIG,"Keyboard");
-		AppendMenu(hMenu,MF_STRING,ID_JOYSTICKS_CONFIG,"Joysticks");
-		AppendMenu(hMenu,MF_STRING,ID_TAPE_CONFIG,"Tape");
-		AppendMenu(hMenu,MF_STRING,ID_BITBANGER_CONFIG,"BitBanger");
-	}
-	return hMenu;
-}
-
 bool IsShiftKeyDown()
 {
   return (GetKeyState(VK_SHIFT) & 0x8000) != 0;
@@ -1146,8 +1185,6 @@ bool IsShiftKeyDown()
 
 static void InsertRomPakCartridge()
 {
-	SetThreadDescription(GetCurrentThread(), L"** ROM Pak Cartridge Loader UI Thread");
-
 	const auto insert_rom_cartridge = [](const auto& filename)
 	{
 		const auto result(PakInsertRom(filename));
@@ -1258,41 +1295,131 @@ static void set_menu_item_text(HMENU menu, UINT id, std::string text, std::strin
 	SetMenuItemInfo(menu, id, FALSE, &item_info);
 }
 
+static std::optional<std::pair<std::string, std::string>> get_menu_item_text(HMENU menu, UINT id)
+{
+	MENUITEMINFO item_info = {};
+
+	// Get the size of the item text (by setting dwTypeData to null).
+	item_info.cbSize = sizeof(item_info);
+	item_info.fMask = MIIM_STRING;
+	item_info.fType = MFT_STRING;
+	item_info.dwTypeData = nullptr;
+	if (!GetMenuItemInfo(menu, id, FALSE, &item_info))
+	{
+		return {};
+	}
+
+
+	// Grab the text of the menu item.
+	std::pair<std::string, std::string> item_result;
+
+	item_result.first.resize(item_info.cch + 1);
+	item_info.dwTypeData = item_result.first.data();
+	item_info.cch = item_result.first.size();
+	if (!GetMenuItemInfo(menu, id, FALSE, &item_info))
+	{
+		return {};
+	}
+
+
+	// Separate the accelerator text, if present, from the item text.
+	if (const auto tab_position(item_result.first.find('\t')); tab_position != std::string::npos)
+	{
+		item_result.second = item_result.first.substr(tab_position + 1);
+		item_result.first.resize(tab_position);
+	}
+
+	return item_result;
+}
+
+static void replace_menu_item_text(HMENU menu, UINT id, std::string text)
+{
+	const auto menu_text(get_menu_item_text(menu, id));
+	if (!menu_text.has_value())
+	{
+		throw std::runtime_error("Cannot replace menu item text. Menu item does not exist in menu.");
+	}
+	
+	set_menu_item_text(menu, id, text, menu_text->second);
+}
+
+HMENU find_submenu_containing_id(HMENU menu, UINT id)
+{
+	MENUITEMINFO item_info = {};
+	item_info.cbSize = sizeof(item_info);
+
+	if (GetMenuItemInfo(menu, id, FALSE, &item_info))
+	{
+		return menu;
+	}
+
+	for (auto itemCount(GetMenuItemCount(menu)), i(0); i < itemCount; ++i)
+	{
+		if (const auto sub_menu(GetSubMenu(menu, i)); sub_menu != nullptr)
+		{
+			const auto found_menu(find_submenu_containing_id(sub_menu, id));
+			if (found_menu != nullptr)
+			{
+				return found_menu;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 static void UpdateControlMenu(HMENU menu)
 {
-	set_menu_item_text(
+	replace_menu_item_text(
 		menu,
-		ID_CONTROL_TOGGLE_PAUSE,
-		EmuState.Debugger.IsHalted() ? "Resume" : "Pause",
-		"F7");
+		ID_CONTROL_TOGGLE_POWER,
+		EmuState.EmulationRunning ? "Power Off" : "Power On");
 
-	set_menu_item_text(
+	auto emulator_running(EmuState.EmulationRunning ? MF_ENABLED : (MF_ENABLED | MF_GRAYED));
+	EnableMenuItem(menu, ID_CONTROL_HARD_RESET, MF_BYCOMMAND | emulator_running);
+	EnableMenuItem(menu, ID_CONTROL_SOFT_RESET, MF_BYCOMMAND | emulator_running);
+
+	replace_menu_item_text(
+		menu,
+		ID_CONTROL_TOGGLE_MUTE_AUDIO,
+		GetIsAudioMuted() ? "Unmute Audio" : "Mute Audio");
+
+	replace_menu_item_text(
 		menu,
 		ID_CONTROL_TOGGLE_DISPLAY_TYPE,
 		// FIXME-CHET: Magic number returned by setmonitortype should be enum
 		// FIXME-CHET: QUERY SHIT!
-		SetMonitorType(QUERY) == 0 ? "Switch to RGB Display" : "Switch to Composite Display",
-		"F6");
+		SetMonitorType(QUERY) == 0 ? "Switch to RGB Display" : "Switch to Composite Display");
 
-	set_menu_item_text(
+	EnableMenuItem(
+		menu,
+		ID_CONTROL_TOGGLE_ARTIFACT_COLORS,
+		// FIXME-CHET: Magic number returned by setmonitortype should be enum
+		// FIXME-CHET: QUERY SHIT!
+		SetMonitorType(QUERY) == 0 ? MF_ENABLED : MF_GRAYED | MF_DISABLED);
+
+	replace_menu_item_text(
 		menu,
 		ID_CONTROL_TOGGLE_THROTTLE,
 		// FIXME-CHET: Magic number returned by setmonitortype should be enum
 		// FIXME-CHET: QUERY SHIT!
-		SetSpeedThrottle(QUERY) == 0 ? "Enable Speed Throttle" : "Disable Speed Throttle",
-		"F8");
+		SetSpeedThrottle(QUERY) == 0 ? "Enable Speed Throttle" : "Disable Speed Throttle");
 
-	// FIXME-CHET: We should probably just iterate all items and submenus and have
-	// a container that maps ids to update functions.
-	const auto overclock_menu(GetSubMenu(menu, GetMenuItemCount(menu) - 1));
-	if (overclock_menu != nullptr)
-	{
-		set_menu_item_text(
-			overclock_menu,
-			ID_CONTROL_TOGGLE_OVERCLOCK,
-			EmuState.OverclockFlag == false ? "Enable CPU Overclocking" : "Disable CPU Overclocking",
-			"Shift+F8");
-	}
+	replace_menu_item_text(
+		menu,
+		ID_CONTROL_TOGGLE_OVERCLOCK,
+		EmuState.OverclockFlag == false ? "Enable Overclocking" : "Disable Overclocking");
+
+	auto overclock_flags(EmuState.OverclockFlag ? MF_ENABLED : (MF_ENABLED | MF_GRAYED));
+	EnableMenuItem(menu, ID_CONTROL_OVERCLOCK_DECREASE, MF_BYCOMMAND | overclock_flags);
+	EnableMenuItem(menu, ID_CONTROL_OVERCLOCK_INCREASE, MF_BYCOMMAND | overclock_flags);
+
+	replace_menu_item_text(
+		menu,
+		ID_CONTROL_TOGGLE_PAUSE,
+		EmuState.Debugger.IsHalted() ? "Resume" : "Pause");
+	EnableMenuItem(menu, ID_CONTROL_TOGGLE_PAUSE, MF_BYCOMMAND | emulator_running);
+
 }
 
 static [[nodiscard]] std::vector<vcc::utils::cartridge_catalog::item_type> UpdateCartridgeMenu(HMENU menu)
@@ -1303,9 +1430,21 @@ static [[nodiscard]] std::vector<vcc::utils::cartridge_catalog::item_type> Updat
 	}
 
 	::vcc::ui::menu::menu_builder builder;
-	builder.add_root_submenu("Cartridge Port");
 
-	builder.add_submenu_item(ID_INSERT_ROMPAK_CARTRIDGE - first_cartridge_menu_id, "Insert ROM Pak Catridge...");
+	const auto& inserted_pak_name(PakGetName());
+	const auto is_cartridge_slot_empty(inserted_pak_name.empty());
+
+
+	if (!is_cartridge_slot_empty)
+	{
+		builder.add_root_submenu("Cartridge Port");
+	}
+
+	builder.add_item(
+		is_cartridge_slot_empty,
+		ID_INSERT_ROMPAK_CARTRIDGE - first_cartridge_menu_id,
+		"Insert ROM Pak");
+
 	//builder.add_submenu_item(ID_CARTRIDGE_INSERT_ROM - first_cartridge_menu_id, "Recently used ROM Paks", nullptr, true);
 	using item_type = vcc::utils::cartridge_catalog::item_type;
 
@@ -1313,14 +1452,15 @@ static [[nodiscard]] std::vector<vcc::utils::cartridge_catalog::item_type> Updat
 
 	if (!catalog_items.empty())
 	{
-		builder.add_submenu_separator();
+		builder.add_separator(is_cartridge_slot_empty);
 
 		auto cartridgeSelectMenuItemId(first_select_cartridge_menu_id);
 		for(auto& item : catalog_items)
 		{
 			bool disabled = cartridge_catalog_.is_loaded(item.id);
 			// HACK: See above comment.
-			builder.add_submenu_item(
+			builder.add_item(
+				is_cartridge_slot_empty,
 				cartridgeSelectMenuItemId - first_cartridge_menu_id,
 				"Insert " + item.name,
 				{},
@@ -1330,13 +1470,13 @@ static [[nodiscard]] std::vector<vcc::utils::cartridge_catalog::item_type> Updat
 		}
 	}
 
-	if (const auto& name(PakGetName()); !name.empty())
+	if (!is_cartridge_slot_empty)
 	{
 		builder.add_submenu_separator();
 		// HACK: We subtract first_cartridge_menu_id from the id here because it gets 
 		// added to each of the id's in the item list to virtualize them. Since this
 		// id shouldn't be virtualized we hack it here to cheat,
-		builder.add_submenu_item(ID_EJECT_CARTRIDGE - first_cartridge_menu_id, "Eject " + name);
+		builder.add_submenu_item(ID_EJECT_CARTRIDGE - first_cartridge_menu_id, "Eject " + inserted_pak_name);
 	}
 
 
@@ -1375,4 +1515,123 @@ static void CALLBACK update_status(HWND, UINT, UINT_PTR, DWORD)
 	int len = strlen(tstatus);
 	UpdateTapeStatus(tstatus + len, sizeof(tstatus) - len);
 	SetStatusBarText(tstatus,&EmuState);
+}
+
+void OnTogglePowerOnState()
+{
+	// TODO-CHET: Originally the RUN command handler invalidated the border. It seemed
+	// unnecessary and was removed, however there may be jankiness in other parts
+	// of the code which required it. Find out wtf it was even in there for.
+	EmuState.EmulationRunning = !EmuState.EmulationRunning;
+
+	if (EmuState.EmulationRunning)
+	{
+		EmuState.ResetPending = 2;
+	}
+	else
+	{
+		SetStatusBarText("", &EmuState);
+	}
+}
+
+void OnTogglePause()
+{
+	EmuState.Debugger.ToggleRun();
+}
+
+void OnToggleMonitorType()
+{
+	SetMonitorType(!SetMonitorType(QUERY));
+}
+
+void OnToggleArtifactColors()
+{
+	FlipArtifacts();
+}
+
+void OnToggleThrottle()
+{
+	SetSpeedThrottle(!SetSpeedThrottle(QUERY));
+}
+
+void OnToggleOverclocking()
+{
+	SetOverclock(!EmuState.OverclockFlag);
+	SetupClock();
+}
+
+void OnDecreaseOverclockSpeed()
+{
+	DecreaseOverclockSpeed();
+}
+
+void OnIncreaseOverclockSpeed()
+{
+	IncreaseOverclockSpeed();
+}
+
+void OnSoftReset()
+{
+	if (EmuState.EmulationRunning)
+	{
+		EmuState.ResetPending = 1;
+	}
+}
+
+void OnHardReset()
+{
+	if (EmuState.EmulationRunning)
+	{
+		EmuState.ResetPending = 2;
+	}
+}
+
+void OnDumpScreenshot()
+{
+	DumpScreenshot();
+}
+
+void OnToggleShowFullScreenMenu(HWND window)
+{
+	if (GetMenu(window) != nullptr)
+	{
+		SetMenu(window, nullptr);
+		return;
+	}
+
+	SetMenu(window, LoadMenu(EmuState.WindowInstance, MAKEINTRESOURCE(IDR_MENU)));
+}
+
+void OnStartTool(HWND window, const std::string& tool_name)
+{
+	std::filesystem::path module_path(::vcc::utils::get_module_path(nullptr));
+	const auto path(module_path.parent_path().append(tool_name + ".exe"));
+
+	STARTUPINFO si{};
+	PROCESS_INFORMATION pi{};
+
+	si.cb = sizeof(si);
+
+	auto result = CreateProcess(
+		path.string().c_str(),		// No module name (use command line)
+		nullptr,					// Command line
+		nullptr,					// Process handle not inheritable
+		nullptr,					// Thread handle not inheritable
+		false,						// Set handle inheritance to FALSE
+		0,							// No creation flags
+		nullptr,					// Use parent's environment block
+		nullptr,					// Use parent's starting directory
+		&si,						// Pointer to STARTUPINFO structure
+		&pi							// Pointer to PROCESS_INFORMATION structure
+	);
+
+	if (!result)
+	{
+		MessageBox(
+			window,
+			("Unable to launch external tool `" + tool_name + "`").c_str(),
+			"Unable to start tool!",
+			MB_ICONSTOP | MB_OK);
+	}
+
 }

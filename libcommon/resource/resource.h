@@ -2,6 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by libcommon.rc
 //
+#define VS_VERSION_INFO                 1
 #define IDS_ERROR_UNKNOWN               101
 #define IDS_ERROR_CARTRIDGE_ALREADY_LOADED 102
 #define IDS_ERROR_CARTRIDGE_CANNOT_OPEN 103

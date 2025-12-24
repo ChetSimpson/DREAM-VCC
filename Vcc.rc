@@ -24,72 +24,84 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Menu
 //
 
-IDR_MENU MENUEX
+IDR_MENU MENU
 BEGIN
-    POPUP "File",                           65535,MFT_STRING,MFS_ENABLED
+    POPUP "DREAM"
     BEGIN
-        MENUITEM "Run",                         ID_FILE_RUN,MFT_STRING,MFS_ENABLED
-        MENUITEM "Save Config",                 ID_SAVE_CONFIG,MFT_STRING,MFS_ENABLED
-        MENUITEM "Load Config",                 ID_FILE_LOAD,MFT_STRING,MFS_ENABLED
-        MENUITEM MFT_SEPARATOR
-        MENUITEM MFT_SEPARATOR
-        MENUITEM "Exit",                        ID_FILE_EXIT,MFT_STRING,MFS_ENABLED
-    END
-    POPUP "Edit",                           65535,MFT_STRING,MFS_ENABLED
-    BEGIN
-        MENUITEM "Copy Text",                   ID_COPY_TEXT,MFT_STRING,MFS_ENABLED
-        MENUITEM "Paste Text",                  ID_PASTE_TEXT,MFT_STRING,MFS_ENABLED
-        MENUITEM "Paste BASIC Code (Merge)",    ID_PASTE_BASIC,MFT_STRING,MFS_ENABLED
-        MENUITEM "Paste BASIC Code (with NEW)", ID_PASTE_BASIC_NEW,MFT_STRING,MFS_ENABLED
-    END
-    POPUP "Configuration",                  65535,MFT_STRING,MFS_ENABLED
-    BEGIN
-        MENUITEM "Audio",                       ID_AUDIO_CONFIG,MFT_STRING,MFS_ENABLED
-        MENUITEM "CPU",                         ID_CPU_CONFIG,MFT_STRING,MFS_ENABLED
-        MENUITEM "Display",                     ID_DISPLAY_CONFIG,MFT_STRING,MFS_ENABLED
-        MENUITEM "Keyboard",                    ID_KEYBOARD_CONFIG,MFT_STRING,MFS_ENABLED
-        MENUITEM "JoySticks",                   ID_JOYSTICKS_CONFIG,MFT_STRING,MFS_ENABLED
-        MENUITEM "Tape",                        ID_TAPE_CONFIG,MFT_STRING,MFS_ENABLED
-        MENUITEM "BitBanger",                   ID_BITBANGER_CONFIG,MFT_STRING,MFS_ENABLED
-    END
-    POPUP "Control",                        65535,MFT_STRING,MFS_ENABLED
-    BEGIN
-        MENUITEM "Pause\tF7",                   ID_CONTROL_TOGGLE_PAUSE,MFT_STRING,MFS_ENABLED
-        MENUITEM "Soft Reset\tF5",              ID_CONTROL_SOFT_RESET,MFT_STRING,MFS_ENABLED
-        MENUITEM "Hard Reset\tF9",              ID_CONTROL_HARD_RESET,MFT_STRING,MFS_ENABLED
-        MENUITEM "Switch to RGB/CMB\tF6",       ID_CONTROL_TOGGLE_DISPLAY_TYPE,MFT_STRING,MFS_ENABLED
-        MENUITEM "Toggle NTSC Artifacts Colors\tShift+F6", ID_CONTROL_TOGGLE_ARTIFACT_COLORS,MFT_STRING,MFS_ENABLED
-        MENUITEM "Toggle Throttle\tF8",         ID_CONTROL_TOGGLE_THROTTLE,MFT_STRING,MFS_ENABLED
-        MENUITEM "Swap Joysticks\tShift+F7",    ID_CONTROL_SWAP_JOYSTICKS,MFT_STRING,MFS_ENABLED
-        POPUP "Overclock",                      65535,MFT_STRING,MFS_ENABLED
+        MENUITEM "Toggle Power\tF9",            ID_CONTROL_TOGGLE_POWER
+        POPUP "Reset Machine"
         BEGIN
-            MENUITEM "Enable\tShift+F8",            ID_CONTROL_TOGGLE_OVERCLOCK,MFT_STRING,MFS_ENABLED
-            MENUITEM "Increase Speed\tF3",          ID_CONTROL_OVERCLOCK_INCREASE,MFT_STRING,MFS_ENABLED
-            MENUITEM "Decrease Speed\tF4",          ID_CONTROL_OVERCLOCK_DECREASE,MFT_STRING,MFS_ENABLED
+            MENUITEM "Soft Reset\tF5",              ID_CONTROL_SOFT_RESET
+            MENUITEM "Hard Reset\tShift-F5",        ID_CONTROL_HARD_RESET
+        END
+        MENUITEM "Pause Emulation\tPause",      ID_CONTROL_TOGGLE_PAUSE
+        MENUITEM SEPARATOR
+        MENUITEM "Toggle Display Type",         ID_CONTROL_TOGGLE_DISPLAY_TYPE
+        MENUITEM "Swap NTSC Artifacts Colors\tShift+F6", ID_CONTROL_TOGGLE_ARTIFACT_COLORS
+        MENUITEM SEPARATOR
+        MENUITEM "Mute Audio",                  ID_CONTROL_TOGGLE_MUTE_AUDIO
+        MENUITEM "Swap Joysticks\tShift+F7",    ID_CONTROL_SWAP_JOYSTICKS
+        MENUITEM SEPARATOR
+        POPUP "Performance"
+        BEGIN
+            MENUITEM "Toggle Throttle\tF8",         ID_CONTROL_TOGGLE_THROTTLE
+            MENUITEM "Toggle Overclock\tShift+F8",  ID_CONTROL_TOGGLE_OVERCLOCK
+            MENUITEM "Increase Speed\tF3",          ID_CONTROL_OVERCLOCK_INCREASE
+            MENUITEM "Decrease Speed\tF4",          ID_CONTROL_OVERCLOCK_DECREASE
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "Exit",                        ID_DREAM_EXIT
+    END
+    POPUP "Edit"
+    BEGIN
+        MENUITEM "Copy Text",                   ID_COPY_TEXT
+        MENUITEM "Paste Text",                  ID_PASTE_TEXT
+        MENUITEM "Paste BASIC Code (Merge)",    ID_PASTE_BASIC
+        MENUITEM "Paste BASIC Code (with NEW)", ID_PASTE_BASIC_NEW
+    END
+    POPUP "Settings"
+    BEGIN
+        MENUITEM "Machine",                     ID_CPU_CONFIG
+        MENUITEM "Audio",                       ID_AUDIO_CONFIG
+        MENUITEM "Display",                     ID_DISPLAY_CONFIG
+        MENUITEM "Keyboard Layout",             ID_KEYBOARD_CONFIG
+        MENUITEM "Joystick Ports",              ID_JOYSTICKS_CONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Export Settings",             ID_SAVE_CONFIG
+        MENUITEM "Import Settings",             ID_FILE_LOAD
+    END
+    POPUP "Cartridge"
+    BEGIN
+        POPUP "Cartridge Port"
+        BEGIN
+            MENUITEM "Insert ROM Pak Cartridge",    ID_INSERT_ROMPAK_CARTRIDGE
+            MENUITEM "Insert Device Cartridge",     ID_INSERT_DEVICE_CARTRIDGE
+            MENUITEM "Eject",                       ID_EJECT_CARTRIDGE
         END
     END
-    POPUP "Cartridge",                      65535,MFT_STRING,MFS_ENABLED
+    POPUP "Tools"
     BEGIN
-        POPUP "Cartridge Port",                 65535,MFT_STRING,MFS_ENABLED
-        BEGIN
-            MENUITEM "Insert ROM Pak Cartridge",    ID_INSERT_ROMPAK_CARTRIDGE,MFT_STRING,MFS_ENABLED
-            MENUITEM "Insert Device Cartridge",     ID_INSERT_DEVICE_CARTRIDGE,MFT_STRING,MFS_ENABLED
-            MENUITEM "Eject",                       ID_EJECT_CARTRIDGE,MFT_STRING,MFS_ENABLED
-        END
+        MENUITEM "Print Spooler",               ID_BITBANGER_CONFIG
+        MENUITEM "Cassette Deck",               ID_TAPE_CONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "RS-DOS Disk Image Tool",      ID_TOOLS_RSDOS_DISKIMAGETOOL
+        MENUITEM "OS-9 Disk Image Tool",        ID_TOOLS_OS9_DISKIMAGETOOL
     END
-    POPUP "Debugger",                       65535,MFT_STRING,MFS_ENABLED
+    POPUP "Debugger"
     BEGIN
-        MENUITEM "Memory Display",              ID_MEMORY_DISPLAY,MFT_STRING,MFS_ENABLED
-        MENUITEM "Processor State",             ID_PROCESSOR_STATE,MFT_STRING,MFS_ENABLED
-        MENUITEM "Disassembler",                ID_DISASSEMBLER,MFT_STRING,MFS_ENABLED
-        MENUITEM "Source Debugger",             ID_BREAKPOINTS,MFT_STRING,MFS_ENABLED
-        MENUITEM "MMU Monitor",                 ID_MMU_MONITOR,MFT_STRING,MFS_ENABLED
-        MENUITEM "Execution Trace",             ID_EXEC_TRACE,MFT_STRING,MFS_ENABLED
+        MENUITEM "Memory Display",              ID_MEMORY_DISPLAY
+        MENUITEM "Processor State",             ID_PROCESSOR_STATE
+        MENUITEM "Disassembler",                ID_DISASSEMBLER
+        MENUITEM "Source Debugger",             ID_BREAKPOINTS
+        MENUITEM "MMU Monitor",                 ID_MMU_MONITOR
+        MENUITEM "Execution Trace",             ID_EXEC_TRACE
     END
-    POPUP "Help",                           65535,MFT_STRING | MFT_RIGHTJUSTIFY,MFS_ENABLED
+    POPUP "Help"
     BEGIN
-        MENUITEM "About DREAM-VCC",             IDM_HELP_ABOUT,MFT_STRING,MFS_ENABLED
-        MENUITEM "User Guide",                  IDM_USER_WIKI,MFT_STRING,MFS_ENABLED
+        MENUITEM "About DREAM",                 ID_HELP_ABOUT
+        MENUITEM SEPARATOR
+        MENUITEM "Open VCC User Guide (Deprecated)", ID_HELP_OPEN_USERGUIDE
+        MENUITEM "Report or View Issues",       ID_HELP_REPORTISSUE
     END
 END
 
@@ -153,18 +165,18 @@ IDI_MOUSE               ICON                    "resources\\mouse.ico"
 
 IDD_ABOUTBOX DIALOGEX 0, 0, 255, 270
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About DREAM-VCC"
+CAPTION "About DREAM"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     CONTROL         IDB_VCC,IDC_STATIC,"Static",SS_BITMAP | SS_REALSIZEIMAGE,7,7,240,45
-    CTEXT           "DREAM-VCC - A Better VCC - Version 0.0.0.1",IDC_STATIC,7,55,240,8
+    CTEXT           "DREAM - A Better VCC - Version 0.0.0.1",IDC_STATIC,7,55,240,8
     CTEXT           "Copyright 2015, 2026 By Joseph Forgione, Chet Simpson",IDC_STATIC,7,65,240,8
     LTEXT           "Adapted to Visual Studio by Gary Coulbourne and Wes Gale.",IDC_STATIC,7,81,240,8
     LTEXT           "Hitachi 6309 port by Walter Zambotti.",IDC_STATIC,7,94,240,8
     LTEXT           "Bug fixes and other contributions by Bill Pierce, James Ross, Peter Westberg, James Rye, EJ Jaquay, Mike Rojas, Trey Tomes, and Craig Allsop.  ",IDC_STATIC,7,105,242,16
-    LTEXT           "DREAM-VCC Repository and Release Packages maintained by Chet Simpson.",IDC_STATIC,7,126,240,16
-    LTEXT           "DREAM-VCC is free software: you can redistribute and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.",IDC_STATIC,7,150,240,32
-    LTEXT           "DREAM-VCC is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",IDC_STATIC,7,185,240,24
+    LTEXT           "DREAM Repository and Release Packages maintained by Chet Simpson.",IDC_STATIC,7,126,240,16
+    LTEXT           "DREAM is free software: you can redistribute and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.",IDC_STATIC,7,150,240,32
+    LTEXT           "DREAM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",IDC_STATIC,7,185,240,24
     LTEXT           "See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with VCC (Virtual Color Computer). If not, see http://www.gnu.org/licenses/.",IDC_STATIC,7,214,240,24
     DEFPUSHBUTTON   "Close",IDOK,197,249,50,14
 END
@@ -225,22 +237,22 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,165,198,36,14
 END
 
-IDD_AUDIO DIALOGEX 0, 0, 210, 110
+IDD_AUDIO DIALOGEX 0, 0, 225, 87
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Audio Configuration"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    GROUPBOX        "Sound",IDC_STATIC,9,2,185,80,BS_CENTER
-    LTEXT           "Output device",IDC_STATIC,26,15,46,8
-    CONTROL         "Mute",IDC_MUTE,"Button",BS_AUTOCHECKBOX,85,15,50,10
-    COMBOBOX        IDC_SOUNDCARD,25,28,140,200,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "L",IDC_STATIC,25,50,5,7
-    LTEXT           "R",IDC_STATIC,25,60,5,7
-    CONTROL         "Progress1",IDC_PROGRESSLEFT,"msctls_progress32",PBS_SMOOTH,35,51,120,7
-    CONTROL         "Progress1",IDC_PROGRESSRIGHT,"msctls_progress32",PBS_SMOOTH,35,61,120,7
-    DEFPUSHBUTTON   "OK",IDOK,50,90,36,14
-    PUSHBUTTON      "Apply",IDAPPLY,90,90,36,14
-    PUSHBUTTON      "Cancel",IDCANCEL,130,90,36,14
+    GROUPBOX        "Audio Device",IDC_STATIC,7,8,211,54,BS_CENTER
+    LTEXT           "Output Device:",IDC_STATIC,14,22,49,8
+    COMBOBOX        IDC_SOUNDCARD,67,20,144,200,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "L",IDC_STATIC,67,38,8,8
+    LTEXT           "R",IDC_STATIC,67,48,8,8
+    CONTROL         "Progress1",IDC_PROGRESSLEFT,"msctls_progress32",PBS_SMOOTH,77,40,134,7
+    CONTROL         "Progress1",IDC_PROGRESSRIGHT,"msctls_progress32",PBS_SMOOTH,77,48,134,7
+    DEFPUSHBUTTON   "OK",IDOK,102,66,36,14
+    PUSHBUTTON      "Apply",IDAPPLY,142,66,36,14
+    PUSHBUTTON      "Cancel",IDCANCEL,182,66,36,14
+    LTEXT           "Output Levels:",IDC_STATIC,14,43,47,8
 END
 
 IDD_INPUT DIALOGEX 0, 0, 280, 195
@@ -269,7 +281,7 @@ END
 
 IDD_JOYSTICK DIALOGEX 0, 0, 268, 250
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Joystick Configuration"
+CAPTION "Joystick Ports"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     GROUPBOX        "Left Joystick",IDC_STATIC,6,6,126,213,BS_CENTER
@@ -327,30 +339,32 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,215,227,36,14
 END
 
-IDD_CASSETTE DIALOGEX 0, 0, 265, 115
+IDD_CASSETTE DIALOGEX 0, 0, 309, 121
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Cassette Tape Configuration"
+CAPTION "Cassette Deck"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    LTEXT           "",IDC_TAPEFILE,6,12,200,11,SS_NOPREFIX | SS_PATHELLIPSIS,WS_EX_STATICEDGE
-    PUSHBUTTON      "Browse",IDC_TBROWSE,210,11,50,14
-    PUSHBUTTON      "Rec",IDC_REC,5,32,35,18,BS_CENTER,WS_EX_DLGMODALFRAME
-    PUSHBUTTON      "Play",IDC_PLAY,44,32,35,18,BS_CENTER,WS_EX_DLGMODALFRAME
-    PUSHBUTTON      "Stop",IDC_STOP,83,32,35,18,BS_CENTER,WS_EX_DLGMODALFRAME
-    PUSHBUTTON      "Eject",IDC_EJECT,122,32,35,18,BS_CENTER,WS_EX_DLGMODALFRAME
-    PUSHBUTTON      "Rewind",IDC_RESET,161,32,35,18,BS_CENTER,WS_EX_DLGMODALFRAME
-    CONTROL         "",IDC_MODE,"RichEdit20W",WS_BORDER | 0x800,7,56,35,14,WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
-    CONTROL         "",IDC_TCOUNT,"RichEdit20W",WS_BORDER | 0x2800,53,56,50,15,WS_EX_CLIENTEDGE | WS_EX_RIGHT | WS_EX_STATICEDGE
-    CTEXT           "Mode",IDC_STATIC,7,72,35,8
-    CTEXT           "Counter",IDC_STATIC,53,72,50,8
-    DEFPUSHBUTTON   "OK",IDOK,65,90,36,14
-    PUSHBUTTON      "Apply",IDAPPLY,105,90,36,14
-    PUSHBUTTON      "Cancel",IDCANCEL,145,90,36,14
+    PUSHBUTTON      "Cancel",IDCANCEL,266,100,36,14
+    GROUPBOX        "Deck Controls",IDC_STATIC,7,7,295,87,BS_CENTER
+    LTEXT           "Tape File:",IDC_STATIC,14,20,32,8
+    LTEXT           "",IDC_TAPEFILE,49,20,191,11,SS_NOPREFIX | SS_PATHELLIPSIS,WS_EX_STATICEDGE
+    PUSHBUTTON      "Browse",IDC_TBROWSE,247,18,50,14
+    PUSHBUTTON      "Record",IDC_REC,49,41,35,16,BS_CENTER
+    PUSHBUTTON      "Play",IDC_PLAY,88,41,35,16,BS_CENTER
+    PUSHBUTTON      "Stop",IDC_STOP,127,41,35,16,BS_CENTER
+    PUSHBUTTON      "Eject",IDC_EJECT,166,41,35,16,BS_CENTER
+    PUSHBUTTON      "Rewind",IDC_RESET,205,41,35,16,BS_CENTER
+    LTEXT           "Status:",IDC_STATIC,49,77,23,8
+    CONTROL         "",IDC_MODE,"RichEdit20A",ES_READONLY,74,75,55,12
+    LTEXT           "Tape Counter:",IDC_STATIC,133,77,45,8
+    CONTROL         "",IDC_TCOUNT,"RichEdit20A",ES_READONLY | ES_NUMBER,180,75,60,12,WS_EX_RIGHT
+    DEFPUSHBUTTON   "OK",IDOK,186,100,36,14
+    PUSHBUTTON      "Apply",IDAPPLY,226,100,36,14
 END
 
 IDD_BITBANGER DIALOGEX 0, 0, 255, 100
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "BitBanger Configuration"
+CAPTION "Print Spooler"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     LTEXT           "",IDC_SERIALFILE,7,7,238,11,SS_NOPREFIX | SS_PATHELLIPSIS,WS_EX_STATICEDGE
@@ -602,6 +616,17 @@ BEGIN
 
     IDD_AUDIO, DIALOG
     BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 218
+        VERTGUIDE, 14
+        VERTGUIDE, 67
+        VERTGUIDE, 211
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 80
+        HORZGUIDE, 14
+        HORZGUIDE, 26
+        HORZGUIDE, 32
+        HORZGUIDE, 68
     END
 
     IDD_INPUT, DIALOG
@@ -620,8 +645,16 @@ BEGIN
 
     IDD_CASSETTE, DIALOG
     BEGIN
-        RIGHTMARGIN, 257
-        BOTTOMMARGIN, 93
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        VERTGUIDE, 14
+        VERTGUIDE, 49
+        VERTGUIDE, 240
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 114
+        HORZGUIDE, 20
+        HORZGUIDE, 25
+        HORZGUIDE, 81
     END
 
     IDD_BITBANGER, DIALOG
@@ -689,11 +722,11 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Team DREAM!"
             VALUE "FileDescription", "DREAM - A Better VCC"
-            VALUE "FileVersion", "0,0,0,1"
+            VALUE "FileVersion", "0.0.1.0"
             VALUE "LegalCopyright", "Copyright 2015 by BitRot Software"
             VALUE "OriginalFilename", "dream.exe"
-            VALUE "ProductName", "DREAM-VCC - The Tandy Color Computer 3 Emulator"
-            VALUE "ProductVersion", "0,0,0,1"
+            VALUE "ProductName", "DREAM - The Tandy Color Computer 3 Emulator"
+            VALUE "FileVersion", "0.0.1.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -789,7 +822,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_APP_TITLE           "DREAM-VCC - The Tandy Color Computer 3 Emulator"
+    IDS_APP_TITLE           "DREAM - The Tandy Color Computer 3 Emulator"
 END
 
 #endif    // English (United States) resources
