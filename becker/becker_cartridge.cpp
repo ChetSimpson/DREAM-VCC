@@ -31,7 +31,7 @@ namespace vcc::cartridges::becker_port
 		std::shared_ptr<expansion_port_ui_type> ui,
 		HINSTANCE module_instance)
 		:
-		host_(move(host)),
+		host_(std::move(host)),
 		module_instance_(module_instance),
 		configuration_dialog_(
 			module_instance,

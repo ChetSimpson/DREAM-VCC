@@ -23,7 +23,7 @@ namespace vcc::media::geometry_calculators
 {
 
 	vdk_disk_geometry_calculator::optional_calculated_geometry_type vdk_disk_geometry_calculator::calculate(
-		const header_buffer_type& header_buffer,
+		[[maybe_unused]] const header_buffer_type& header_buffer,
 		[[maybe_unused]] size_type file_size) const
 	{
 		return {};

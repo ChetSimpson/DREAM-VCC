@@ -61,11 +61,11 @@ namespace vcc::bus
 		/// @copydoc cartridge_type::menu_item_id_type
 		using menu_item_id_type = cartridge_type::menu_item_id_type;
 		/// @brief Type alias for the mutex used to coordinate access to member state.
-		using mutex_type = typename MutexType_;
+		using mutex_type = MutexType_;
 		/// @brief Type alias for the lock that used to acquire ownership of a mutex.
-		using scoped_lock_type = typename LockType_<mutex_type>;
+		using scoped_lock_type = LockType_<mutex_type>;
 		/// @brief Type alias for the lock that used to acquire ownership of two mutexes.
-		using dual_scoped_lock_type = typename LockType_<mutex_type, mutex_type>;
+		using dual_scoped_lock_type = LockType_<mutex_type, mutex_type>;
 
 
 	public:
@@ -107,8 +107,8 @@ namespace vcc::bus
 
 			eject();
 
-			handle_ = move(handle);
-			cartridge_ = move(cartridge);
+			handle_ = std::move(handle);
+			cartridge_ = std::move(cartridge);
 			driver_ = &cartridge_->driver();
 
 			// TODO-CHET: This should call cartridge_.start()

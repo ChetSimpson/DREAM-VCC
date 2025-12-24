@@ -98,7 +98,7 @@ namespace VCC { namespace Debugger
 	}
 
 	template<class Type_>
-	LPCSTR ToLPCSTR(const std::basic_filebuf<Type_>&& str)
+	LPCSTR ToLPCSTR([[maybe_unused]] const std::basic_filebuf<Type_>&& str)
 	{
 		static_assert("RValue not supported for ToLPCSTR");
 	}

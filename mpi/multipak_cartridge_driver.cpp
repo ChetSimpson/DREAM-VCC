@@ -43,8 +43,8 @@ namespace vcc::cartridges::multipak
 		std::shared_ptr<expansion_port_bus_type> bus,
 		std::shared_ptr<multipak_configuration> configuration)
 		:
-		bus_(move(bus)),
-		configuration_(move(configuration)),
+		bus_(std::move(bus)),
+		configuration_(std::move(configuration)),
 		slots_{{
 			{::vcc::utils::noop_mutex::shared_instance_, ::vcc::utils::noop_mutex::shared_instance_},
 			{::vcc::utils::noop_mutex::shared_instance_, ::vcc::utils::noop_mutex::shared_instance_},
@@ -131,6 +131,7 @@ namespace vcc::cartridges::multipak
 		if (port_id == mmio_ports::slot_select)
 		{
 			// TODO-CHET: The next two lines should be handled by the write_port function
+			// and 0b11001100 should be or'ed into slot_register_ when writing.
 			slot_register_ &= 0b11001100;
 			slot_register_ |= cached_scs_slot_ | (cached_cts_slot_ << 4);
 
@@ -222,7 +223,7 @@ namespace vcc::cartridges::multipak
 		bool allow_reset)
 	{
 		eject_cartridge(slot, false);	//	TODO-CHET: Remove once insert/eject handle the start/stop calls
-		slots_[slot].insert(move(handle), move(cartridge));
+		slots_[slot].insert(std::move(handle), std::move(cartridge));
 		slots_[slot].start();
 
 		// If the cartridge is being inserted into a slot that is the selected SCS or CTS

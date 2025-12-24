@@ -14,16 +14,7 @@
 
 /*****************************************************************************/
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-	
-	void		_xDbgTrace(const char* pFile, const int iLine, const char* pFormat, ...);
-	
-#ifdef __cplusplus
-}
-#endif
+void		_xDbgTrace(const char* pFile, const int iLine, const char* pFormat, ...);
 
 /*****************************************************************************/
 

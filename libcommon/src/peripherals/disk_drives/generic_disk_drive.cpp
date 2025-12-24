@@ -1,5 +1,4 @@
-#pragma once
-#include <vcc/peripherals/disk_drives/generic_disk_drive.h>
+#include "vcc/peripherals/disk_drives/generic_disk_drive.h"
 #include <stdexcept>
 
 
@@ -8,7 +7,7 @@ namespace vcc::peripherals::disk_drives
 
 	generic_disk_drive::generic_disk_drive(disk_image_ptr_type placeholder_disk)
 		:
-		placeholder_disk_(move(placeholder_disk)),
+		placeholder_disk_(std::move(placeholder_disk)),
 		disk_image_(placeholder_disk_)
 	{
 		if (placeholder_disk_ == nullptr)
@@ -108,7 +107,7 @@ namespace vcc::peripherals::disk_drives
 
 		eject();
 
-		disk_image_ = move(disk_image);
+		disk_image_ = std::move(disk_image);
 		file_path_ = std::move(file_path);
 	}
 

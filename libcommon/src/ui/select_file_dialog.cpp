@@ -15,7 +15,6 @@
 //	You should have received a copy of the GNU General Public License along with
 //	VCC (Virtual Color Computer). If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////
-#pragma once
 #include "vcc/ui/select_file_dialog.h"
 #include <numeric>
 #include <array>
@@ -26,7 +25,7 @@ namespace vcc::ui
 
 	select_file_dialog& select_file_dialog::set_title(string_type title)
 	{
-		title_ = move(title);
+		title_ = std::move(title);
 
 		return *this;
 	}
@@ -40,14 +39,14 @@ namespace vcc::ui
 
 	select_file_dialog& select_file_dialog::set_selection_filter(filter_vector_type filters)
 	{
-		filters_ = move(filters);
+		filters_ = std::move(filters);
 
 		return *this;
 	}
 
 	select_file_dialog& select_file_dialog::set_default_extension(string_type extension)
 	{
-		default_extension_ = move(extension);
+		default_extension_ = std::move(extension);
 
 		return *this;
 	}

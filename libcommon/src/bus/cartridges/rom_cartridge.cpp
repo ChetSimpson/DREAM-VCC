@@ -28,10 +28,10 @@ namespace vcc::bus::cartridges
 		buffer_type buffer,
 		bool enable_bank_switching)
 		:
-		bus_(move(bus)),
-		name_(move(name)),
-		buffer_(move(buffer)),
+		bus_(std::move(bus)),
+		name_(std::move(name)),
 		enable_bank_switching_(enable_bank_switching),
+		buffer_(std::move(buffer)),
 		bank_offset_(0)
 	{
 		if (bus_ == nullptr)

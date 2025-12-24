@@ -179,7 +179,7 @@ unsigned short IdeRegRead(unsigned char Reg)
 void ExecuteCommand()
 {
 	CurrentCommand=Registers.Command;
-	char Temp=0;
+	unsigned char Temp=0;
 	switch (Registers.Command)
 	{
 			

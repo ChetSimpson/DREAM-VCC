@@ -80,8 +80,8 @@ This file is part of VCC (Virtual Color Computer).
 #include "IDisplayDebug.h"
 #endif
 #include "menu_populator.h"
-#include <vcc/utils/cartridge_catalog.h>
-#include <vcc/utils/filesystem.h>
+#include "vcc/utils/cartridge_catalog.h"
+#include "vcc/utils/filesystem.h"
 
 using namespace VCC;
 
@@ -162,7 +162,7 @@ bool IsShiftKeyDown();
 static void ProcessSelectDeviceCartridgeMenuItem(const vcc::utils::cartridge_catalog::item_type& catalog_item);
 static vcc::utils::cartridge_catalog::item_container_type cartridge_menu_catalog_items;
 static void LoadStartupCartridge();
-static [[nodiscard]] std::vector<vcc::utils::cartridge_catalog::item_type> UpdateCartridgeMenu(HMENU menu);
+[[nodiscard]] static std::vector<vcc::utils::cartridge_catalog::item_type> UpdateCartridgeMenu(HMENU menu);
 static void UpdateControlMenu(HMENU menu);
 static void set_menu_item_text(HMENU menu, UINT id, std::string text, std::string hotkey);
 static void CALLBACK update_status(HWND, UINT, UINT_PTR, DWORD);
@@ -1422,7 +1422,7 @@ static void UpdateControlMenu(HMENU menu)
 
 }
 
-static [[nodiscard]] std::vector<vcc::utils::cartridge_catalog::item_type> UpdateCartridgeMenu(HMENU menu)
+[[nodiscard]] static std::vector<vcc::utils::cartridge_catalog::item_type> UpdateCartridgeMenu(HMENU menu)
 {
 	while (GetMenuItemCount(menu) > 0)
 	{

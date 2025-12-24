@@ -19,12 +19,12 @@
 #include "wd1793.h"
 #include "resource.h"
 #include "create_disk_image_dialog.h"
-#include <vcc/ui/select_file_dialog.h>
-#include <vcc/ui/menu/menu_builder.h>
-#include <vcc/utils/disk_image_loader.h>
-#include <vcc/utils/winapi.h>
-#include <vcc/utils/persistent_value_store.h>
-#include <vcc/utils/filesystem.h>
+#include "vcc/ui/select_file_dialog.h"
+#include "vcc/ui/menu/menu_builder.h"
+#include "vcc/utils/disk_image_loader.h"
+#include "vcc/utils/winapi.h"
+#include "vcc/utils/persistent_value_store.h"
+#include "vcc/utils/filesystem.h"
 
 
 namespace vcc::cartridges::fd502
@@ -82,10 +82,10 @@ namespace vcc::cartridges::fd502
 		HINSTANCE module_instance)
 		:
 		host_(host),
-		ui_(move(ui)),
+		ui_(std::move(ui)),
 		bus_(bus),
-		driver_(move(driver)),
-		configuration_(move(configuration)),
+		driver_(std::move(driver)),
+		configuration_(std::move(configuration)),
 		module_instance_(module_instance),
 		settings_dialog_(
 			module_instance_,
@@ -160,7 +160,7 @@ namespace vcc::cartridges::fd502
 						continue;
 					}
 
-					driver_->insert_disk(drive_id, move(disk_image), mount_path);
+					driver_->insert_disk(drive_id, std::move(disk_image), mount_path);
 				}
 			}
 		}
@@ -348,7 +348,7 @@ namespace vcc::cartridges::fd502
 			return;
 		}
 
-		driver_->insert_disk(drive_id, move(disk_image), disk_image_path);
+		driver_->insert_disk(drive_id, std::move(disk_image), disk_image_path);
 		// TODO-CHET: Maybe this should be handled in the configuration. This way it can
 		// keep track of any new mount changes and update accordingly (i.e. turning them
 		// on needs to save all the new mounts).

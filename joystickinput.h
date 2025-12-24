@@ -49,11 +49,6 @@ HRESULT JoyStickPoll(DIJOYSTATE2 * ,unsigned char);
 int EnumerateJoysticks();
 bool InitJoyStick (unsigned char);
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 unsigned char vccJoystickGetScan(unsigned char);
 unsigned char SetMouseStatus(unsigned char,unsigned char);
 void joystick(unsigned int, unsigned int);
@@ -61,9 +56,5 @@ void SetButtonStatus(unsigned char, unsigned char);
 void SetStickNumbers(unsigned char, unsigned char);
 void vccJoystickStartTandy(unsigned char);
 void vccJoystickStartCCMax();
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

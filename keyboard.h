@@ -70,16 +70,9 @@ struct keytranslationentry_t
 
 /*****************************************************************************/
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-	void			vccKeyboardBuildRuntimeTable(keyboardlayout_e keyBoardLayout);
-	void			vccKeyboardHandleKey(unsigned char, keyevent_e keyState);
-	unsigned char	vccKeyboardGetScan(unsigned char);
-#ifdef __cplusplus
-}
-#endif
+void			vccKeyboardBuildRuntimeTable(keyboardlayout_e keyBoardLayout);
+void			vccKeyboardHandleKey(unsigned char, keyevent_e keyState);
+unsigned char	vccKeyboardGetScan(unsigned char);
 
 /*****************************************************************************/
 

@@ -1,9 +1,9 @@
 #pragma once
-#include <vcc/media/geometry_calculator.h>
-#include <vcc/media/geometry_calculators/os9_disk_geometry_calculator.h>
-#include <vcc/media/geometry_calculators/raw_disk_geometry_calculator.h>
-#include <vcc/media/geometry_calculators/jvc_disk_geometry_calculator.h>
-#include <vcc/media/geometry_calculators/vdk_disk_geometry_calculator.h>
+#include "vcc/media/geometry_calculator.h"
+#include "vcc/media/geometry_calculators/os9_disk_geometry_calculator.h"
+#include "vcc/media/geometry_calculators/raw_disk_geometry_calculator.h"
+#include "vcc/media/geometry_calculators/jvc_disk_geometry_calculator.h"
+#include "vcc/media/geometry_calculators/vdk_disk_geometry_calculator.h"
 #include <map>
 #include <memory>
 

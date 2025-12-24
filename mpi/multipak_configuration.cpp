@@ -9,8 +9,8 @@ namespace vcc::cartridges::multipak
 		path_type path,
 		string_type section)
 		: 
-		ui_(move(ui)),
-		value_store_(std::move(path), move(section))
+		ui_(std::move(ui)),
+		value_store_(std::move(path), std::move(section))
 	{
 		if (ui_ == nullptr)
 		{

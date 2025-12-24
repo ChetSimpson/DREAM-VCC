@@ -1,6 +1,6 @@
 #pragma once
-#include <vcc/detail/exports.h>
-#include <vcc/media/disk_image.h>
+#include "vcc/detail/exports.h"
+#include "vcc/media/disk_image.h"
 #include <memory>
 #include <filesystem>
 

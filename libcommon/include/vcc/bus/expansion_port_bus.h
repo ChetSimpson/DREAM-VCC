@@ -78,7 +78,7 @@ namespace vcc::bus
 		/// @param address The address to read the value from.
 		/// 
 		/// @return The value at the specified address.
-		virtual [[nodiscard]] unsigned char read_memory_byte(unsigned short address) = 0;
+		[[nodiscard]] virtual unsigned char read_memory_byte(unsigned short address) = 0;
 	};
 
 }

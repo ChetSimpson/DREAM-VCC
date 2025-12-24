@@ -34,30 +34,7 @@ void ValidatePath(char *Path)
 	return;
 }
 
-int CheckPath( char *Path)	//Return 1 on Error
-{
-	char TempPath[MAX_PATH]="";
-	HANDLE hr=nullptr;
 
-	if ((strlen(Path)==0) | (strlen(Path) > MAX_PATH))
-		return 1;
-	hr=CreateFile(Path,0,FILE_SHARE_READ,nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr);
-	if (hr==INVALID_HANDLE_VALUE) //File Doesn't exist
-	{
-		GetModuleFileName(nullptr,TempPath,MAX_PATH);
-		PathRemoveFileSpec(TempPath);
-		if ( (strlen(TempPath)) + (strlen(Path)) > MAX_PATH)	//Resulting path is to large Bail.
-			return 1;
-
-		strcat(TempPath,Path);
-		hr=CreateFile(TempPath,0,FILE_SHARE_READ,nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr);			
-		if (hr ==INVALID_HANDLE_VALUE)
-			return 1;
-		strcpy(Path,TempPath);
-	}
-	CloseHandle(hr);
-	return 0;
-}
 
 // These are here to remove dependance on shlwapi.dll. ASCII only
 void PathStripPath ( char *TextBuffer)

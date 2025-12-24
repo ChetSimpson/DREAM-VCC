@@ -49,7 +49,9 @@ namespace vcc::utils
 		return utf8_str;
 	}
 
-	LIBCOMMON_EXPORT HBITMAP load_shared_bitmap(HINSTANCE module_handle, UINT id, bool transparent)
+	// TODO-CHET: Check if the transparent flag is really necessary now or in the future
+	// and remove it if not.
+	LIBCOMMON_EXPORT HBITMAP load_shared_bitmap(HINSTANCE module_handle, UINT id, [[maybe_unused]] bool transparent)
 	{
 		return static_cast<HBITMAP>(LoadImage(
 			module_handle,

@@ -22,34 +22,17 @@
 #include "vcc/utils/cartridge_loader.h"
 #include "vcc/utils/winapi.h"
 #include "vcc/utils/filesystem.h"
+#include "vcc/common/DialogOps.h"
 #include <vector>
 #include <fstream>
 #include <iterator>
 #include <map>
-#include <vcc/common/DialogOps.h>
 
 
 extern HINSTANCE gModuleInstance;
 
 namespace vcc::utils
 {
-
-	namespace
-	{
-
-		std::string extract_filename(std::string name)
-		{
-			name = name.substr(name.find_last_of("/\\") + 1);
-			
-			if (const auto end_index(name.find_last_of('.')); end_index > 0)
-			{
-				name = name.substr(0, end_index);
-			}
-
-			return name;
-		}
-
-	}
 
 	cartridge_file_type determine_cartridge_type(const std::filesystem::path& pathname)
 	{
@@ -95,13 +78,13 @@ namespace vcc::utils
 
 		auto rom_cartridge(
 			std::make_unique<::vcc::bus::cartridges::rom_cartridge>(
-				move(bus),
+				std::move(bus),
 				pathname.stem().string(),
-				move(*rom_image),
+				std::move(*rom_image),
 				enable_bank_switching));
 		return {
 			nullptr,
-			move(rom_cartridge),
+			std::move(rom_cartridge),
 			cartridge_loader_status::success
 		};
 	}
@@ -135,7 +118,7 @@ namespace vcc::utils
 			"GetCartridgePluginFactory")));
 		if (factoryAccessor != nullptr)
 		{
-			details.cartridge = factoryAccessor()(move(host), move(ui), move(bus));
+			details.cartridge = factoryAccessor()(std::move(host), std::move(ui), std::move(bus));
 			details.load_result = cartridge_loader_status::success;
 
 			return details;
@@ -162,10 +145,10 @@ namespace vcc::utils
 			return { nullptr, nullptr, cartridge_loader_status::cannot_open };
 
 		case cartridge_file_type::rom_image:	//	File is a ROM image
-			return load_rom_cartridge(pathname, move(host), move(ui), move(bus));
+			return load_rom_cartridge(pathname, std::move(host), std::move(ui), std::move(bus));
 
 		case cartridge_file_type::library:		//	File is a DLL
-			return load_library_cartridge(pathname, move(host), move(ui), move(bus));
+			return load_library_cartridge(pathname, std::move(host), std::move(ui), std::move(bus));
 		}
 	}
 

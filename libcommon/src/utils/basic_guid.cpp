@@ -1,4 +1,4 @@
-#include <vcc/utils/basic_guid.h>
+#include "vcc/utils/basic_guid.h"
 #include <format>
 
 
@@ -47,8 +47,6 @@ namespace vcc::utils
 		{
 			return {};
 		}
-
-		return {};
 	}
 
 }

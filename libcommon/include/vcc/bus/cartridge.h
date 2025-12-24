@@ -64,7 +64,7 @@ namespace vcc::bus
 		/// Retrieves the name of the cartridge.
 		/// 
 		/// @return A string containing the cartridge name.
-		virtual [[nodiscard]] name_type name() const = 0;
+		[[nodiscard]] virtual name_type name() const = 0;
 
 		/// @brief Retrieves a reference to the device this cartridge controls.
 		/// 
@@ -73,7 +73,7 @@ namespace vcc::bus
 		/// the functionality of the device through that interface
 		/// 
 		/// @return A reference to a cartridge device.
-		virtual [[nodiscard]] driver_type& driver() = 0;
+		[[nodiscard]] virtual driver_type& driver() = 0;
 
 		/// @brief Initialize the plugin.
 		///

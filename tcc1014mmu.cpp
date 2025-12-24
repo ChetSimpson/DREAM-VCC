@@ -281,6 +281,9 @@ unsigned char MemRead8( unsigned short address)
 unsigned char SafeMemRead8(unsigned short address)
 {
 	// Do nothing if memory is in initializing state
+	// FIXME-CHET: A call to SafeMemRead8() during memory initialization should never happen!
+	// This preexisting check was added to prevent access violations, but the root cause
+	// was never fixed.
 	if (mem_initializing) return 0;
 	// Filter port reads that are not GIME or SAM
 	if ((address > 0xFEFF) && (address < 0xFF90)) return memory[address];
@@ -385,6 +388,9 @@ void MemWrite16(unsigned short data,unsigned short addr)
 }
 
 unsigned short GetMem(unsigned long address) {
+	// FIXME-CHET: A call to GetMem() during memory initialization should never happen!
+	// This preexisting check was added to prevent access violations, but the root cause
+	// was never fixed.
 	if (mem_initializing) return 0;  // To prevent access exceptions
 	if (address < RamSize)
 		return(memory[address]);

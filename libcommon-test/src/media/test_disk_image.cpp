@@ -57,9 +57,9 @@ TEST_F(test_disk_image, sector_count_property)
 // to the constructor
 TEST_F(test_disk_image, first_valid_sector_id_property)
 {
-	EXPECT_EQ(disk_image(test_geometry_, 0).first_valid_sector_id(), 0);
-	EXPECT_EQ(disk_image(test_geometry_, 1).first_valid_sector_id(), 1);
-	EXPECT_EQ(disk_image(test_geometry_, 5).first_valid_sector_id(), 5);
+	EXPECT_EQ(disk_image(test_geometry_, 0).first_valid_sector_id(), 0u);
+	EXPECT_EQ(disk_image(test_geometry_, 1).first_valid_sector_id(), 1u);
+	EXPECT_EQ(disk_image(test_geometry_, 5).first_valid_sector_id(), 5u);
 }
 
 // Validates the head count returned is the same value passed to the constructor.

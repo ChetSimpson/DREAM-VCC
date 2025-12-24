@@ -55,7 +55,7 @@ JoyStick RightJS;
 extern SystemState EmuState;
 
 // Clock cycles since Joystick ramp started
-extern int JS_Ramp_Clock=0;
+int JS_Ramp_Clock=0;
 
 // Software high resolution disabled
 // DAC change is used for software high resolution joystick.

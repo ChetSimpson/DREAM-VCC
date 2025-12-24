@@ -121,7 +121,6 @@ static unsigned char rega[4]={0,0,0,0};  //PIA0
 static unsigned char regb[4]={0,0,0,0};  //PIA1
 static unsigned char rega_dd[4]={0,0,0,0};
 static unsigned char regb_dd[4]={0,0,0,0};
-static unsigned char LeftChannel=0,RightChannel=0;
 static unsigned char Asample=0,Ssample=0,Csample=0;
 static bool CartInserted = false, CartAutoStart = true;
 static unsigned char AddLF=0;

@@ -17,7 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "create_disk_image_dialog.h"
 #include "resource.h"
-#include <vcc/common/DialogOps.h>
+#include "vcc/common/DialogOps.h"
 #include <fstream>
 
 
@@ -94,9 +94,8 @@ namespace vcc::cartridges::fd502
 
 	INT_PTR create_disk_image_dialog::on_command(
 		WPARAM wParam,
-		LPARAM lParam)
+		[[maybe_unused]] LPARAM lParam)
 	{
-		INT_PTR result(FALSE);
 
 		switch (LOWORD(wParam))
 		{
@@ -117,7 +116,6 @@ namespace vcc::cartridges::fd502
 			break;
 
 		default:
-			result = TRUE;
 			break;
 		}
 

@@ -19,7 +19,7 @@ This file is part of VCC (Virtual Color Computer).
 #pragma once
 #include "vcc/ui/menu/menu_item_collection.h"
 #include "vcc/utils/cartridge_loader.h"
-#include <vcc/utils/cartridge_catalog.h>
+#include "vcc/utils/cartridge_catalog.h"
 #include <string>
 #include <filesystem>
 

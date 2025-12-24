@@ -26,15 +26,9 @@ This file is part of VCC (Virtual Color Computer).
 #include <iostream>
 #include <direct.h>
 #include <assert.h>
-
-#pragma warning(push)
-#pragma warning(disable:4091)
 #include <ShlObj.h>
-#pragma warning(pop)
-
 #include "defines.h"
 #include "resource.h"
-#include "config.h"
 #include "tcc1014graphics.h"
 #include "mc6821.h"
 #include "Vcc.h"
@@ -341,8 +335,6 @@ unsigned char ReadIniFile()
 	}
 	if (CurrentConfig.KeyMap == kKBLayoutCustom) LoadCustomKeyMap(KeyMapFilePath);
 	vccKeyboardBuildRuntimeTable((keyboardlayout_e)CurrentConfig.KeyMap);
-
-	CheckPath(CurrentConfig.ModulePath);
 
 	LeftJS.UseMouse=GetPrivateProfileInt("LeftJoyStick","UseMouse",1,IniFilePath);
 	LeftJS.Left=GetPrivateProfileInt("LeftJoyStick","Left",75,IniFilePath);

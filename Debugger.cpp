@@ -62,7 +62,7 @@ namespace VCC::Debugger
 			throw std::invalid_argument("Udpate client is already registered with the debugger");
 		}
 
-		RegisteredClients_[window] = move(client);
+		RegisteredClients_[window] = std::move(client);
 	}
 	
 	
@@ -144,7 +144,7 @@ namespace VCC::Debugger
 	{
 		SectionLocker lock(Section_);
 
-		Breakpoints_ = move(breakpoints);
+		Breakpoints_ = std::move(breakpoints);
 		BreakpointsChanged_ = true;
 	}
 
@@ -296,7 +296,7 @@ namespace VCC::Debugger
 	{
 		SectionLocker lock(Section_);
 
-		TraceStartTriggers_ = move(startTriggers);
+		TraceStartTriggers_ = std::move(startTriggers);
 		TraceTriggerChanged_ = true;
 	}
 
@@ -304,7 +304,7 @@ namespace VCC::Debugger
 	{
 		SectionLocker lock(Section_);
 
-		TraceStopTriggers_ = move(stopTriggers);
+		TraceStopTriggers_ = std::move(stopTriggers);
 		TraceTriggerChanged_ = true;
 	}
 

@@ -31,8 +31,8 @@ namespace vcc::cartridges::becker_port
 		update_connection_settings_type update_connection_settings)
 		:
 		module_handle_(module_handle),
-		ui_(move(ui)),
-		update_connection_settings_(move(update_connection_settings))
+		ui_(std::move(ui)),
+		update_connection_settings_(std::move(update_connection_settings))
 	{
 		if (module_handle_ == nullptr)
 		{
@@ -55,8 +55,8 @@ namespace vcc::cartridges::becker_port
 	{
 		if (!dialog_handle_)
 		{
-			server_address_ = move(server_address);
-			server_port_ = move(server_port);
+			server_address_ = std::move(server_address);
+			server_port_ = std::move(server_port);
 
 			dialog_handle_ = CreateDialogParam(
 				module_handle_,

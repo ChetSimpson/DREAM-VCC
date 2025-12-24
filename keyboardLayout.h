@@ -29,19 +29,10 @@ constexpr auto MAX_CTRANSTBLSIZ = 150u;
 
 /*****************************************************************************/
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-	extern keytranslationentry_t keyTranslationsCoCo[];
-	extern keytranslationentry_t keyTranslationsNatural[];
-	extern keytranslationentry_t keyTranslationsCompact[];
-	extern keytranslationentry_t keyTranslationsCustom[];
-
-#ifdef __cplusplus
-}
-#endif
+extern keytranslationentry_t keyTranslationsCoCo[];
+extern keytranslationentry_t keyTranslationsNatural[];
+extern keytranslationentry_t keyTranslationsCompact[];
+extern keytranslationentry_t keyTranslationsCustom[];
 
 /*****************************************************************************/
 

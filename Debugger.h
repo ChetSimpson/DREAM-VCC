@@ -161,7 +161,6 @@ namespace VCC::Debugger
 		std::atomic<bool>				TraceEnabled_ = false;
 		std::atomic<bool>				TraceRunning_ = false;
 		size_t							TraceMaxSamples_ = 500000;
-		long							TraceSamplesCollected_ = 0;
 		bool							TraceEmulation_ = false;
 		bool							TraceScreen_ = false;
 		triggerbuffer_type				TraceStartTriggers_;

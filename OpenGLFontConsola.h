@@ -25,7 +25,7 @@
 
 namespace VCC 
 {
-	OpenGLFontGlyph OpenGLFontConsola[];
+	extern const OpenGLFontGlyph OpenGLFontConsola[];
 }
 
 #endif // USE_OPENGL

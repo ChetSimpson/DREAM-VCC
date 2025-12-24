@@ -45,8 +45,8 @@ extern "C" __declspec(dllexport) ::vcc::bus::cartridge_plugin_factory_prototype 
 		std::unique_ptr<::vcc::bus::expansion_port_ui> ui,
 		std::unique_ptr<::vcc::bus::expansion_port_bus> bus) -> ::vcc::bus::cartridge_factory_result
 		{
-			std::shared_ptr<::vcc::bus::expansion_port_ui> shared_ui(move(ui));
-			std::shared_ptr<::vcc::bus::expansion_port_bus> shared_bus(move(bus));
+			std::shared_ptr<::vcc::bus::expansion_port_ui> shared_ui(std::move(ui));
+			std::shared_ptr<::vcc::bus::expansion_port_bus> shared_bus(std::move(bus));
 
 			auto configuration(std::make_shared<::vcc::cartridges::multipak::multipak_configuration>(
 				shared_ui,
@@ -61,7 +61,7 @@ extern "C" __declspec(dllexport) ::vcc::bus::cartridge_plugin_factory_prototype 
 				host,
 				shared_ui,
 				shared_bus,
-				move(device),
+				std::move(device),
 				gModuleInstance,
 				configuration);
 		};

@@ -22,8 +22,12 @@
 
 LIBCOMMON_EXPORT void PathStripPath(char*);
 LIBCOMMON_EXPORT void ValidatePath(char* Path);
-LIBCOMMON_EXPORT [[nodiscard]] int CheckPath(char*);
-LIBCOMMON_EXPORT [[nodiscard]] BOOL PathRemoveFileSpec(char*);
-LIBCOMMON_EXPORT [[nodiscard]] char* PathFindExtension(char*);
-LIBCOMMON_EXPORT [[nodiscard]] DWORD WritePrivateProfileInt(LPCTSTR, LPCTSTR, int, LPCTSTR);
+// FIXME-CHET: This does not look like it should force checking of the return value
+// plus it's getting replaced with filesystem::path
+/*[[nodiscard]]*/ LIBCOMMON_EXPORT BOOL PathRemoveFileSpec(char*);
+[[nodiscard]] LIBCOMMON_EXPORT char* PathFindExtension(char*);
+
+// FIXME-CHET: This should force checking of the return value but it's going away
+// so we're just disable that requirement until that happens.
+/*[[nodiscard]]*/ LIBCOMMON_EXPORT DWORD WritePrivateProfileInt(LPCTSTR, LPCTSTR, int, LPCTSTR);
 

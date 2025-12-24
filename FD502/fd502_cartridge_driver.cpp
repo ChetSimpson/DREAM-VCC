@@ -86,7 +86,7 @@ namespace vcc::cartridges::fd502
 			throw std::invalid_argument("Cannot start the FD502 Cartridge Driver. ROM is null.");
 		}
 
-		rom_ = move(rom);
+		rom_ = std::move(rom);
 
 		wd1793_.start();
 		wd1793_.set_turbo_mode(enable_turbo);	// TODO-CHET: Pass as arg to the wd1793 start function
@@ -131,7 +131,7 @@ namespace vcc::cartridges::fd502
 			throw std::invalid_argument("Cannot set ROM. ROM image is null.");
 		}
 
-		rom_ = move(rom);
+		rom_ = std::move(rom);
 	}
 
 	void fd502_cartridge_driver::set_turbo_mode(bool enable_turbo)
@@ -144,7 +144,7 @@ namespace vcc::cartridges::fd502
 		std::unique_ptr<disk_image_type> disk_image,
 		path_type file_path)
 	{
-		wd1793_.insert_disk(drive_id, move(disk_image), std::move(file_path));
+		wd1793_.insert_disk(drive_id, std::move(disk_image), std::move(file_path));
 	}
 
 	void fd502_cartridge_driver::eject_disk(drive_id_type drive_id)

@@ -17,7 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "vcc/detail/exports.h"
-#include <vcc/utils/cartridge_catalog.h>
+#include "vcc/utils/cartridge_catalog.h"
 #include <filesystem>
 #include <string>
 #include <functional>
@@ -52,7 +52,7 @@ namespace vcc::bus
 		/// @brief Retrieve the path to the configuration file.
 		/// 
 		/// @return A copy of the path to the configuration file.
-		virtual [[nodiscard]] path_type configuration_path() const = 0;
+		[[nodiscard]] virtual path_type configuration_path() const = 0;
 
 		/// @brief Retrieves the path to where system ROMS are stored.
 		/// 
@@ -60,21 +60,21 @@ namespace vcc::bus
 		/// stored.
 		/// 
 		/// @return A path to where system ROMS are stored.
-		virtual [[nodiscard]] path_type system_rom_path() const = 0;
+		[[nodiscard]] virtual path_type system_rom_path() const = 0;
 
 		/// @brief Retrieves the path to where Device Cartridges are stored.
 		/// 
 		/// This function returns a path to where Device Cartridges are stored.
 		/// 
 		/// @return A path to where Device Cartridges are stored.
-		virtual [[nodiscard]] path_type system_cartridge_path() const = 0;
+		[[nodiscard]] virtual path_type system_cartridge_path() const = 0;
 
 		/// @brief Retrieve the cartridge plugin mutex.
 		/// 
 		/// Retrieve the mutex used to gain exclusive access to cartridge plugins.
 		/// 
 		/// @return The cartridge mutex.
-		virtual [[nodiscard]] catridge_mutex_type& driver_mutex() const = 0;
+		[[nodiscard]] virtual catridge_mutex_type& driver_mutex() const = 0;
 
 		/// @brief Retrieve the system wide cartridge catalog.
 		/// 

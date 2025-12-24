@@ -1,7 +1,7 @@
 #pragma once
 #include "vcc/utils/basic_guid.h"
 #include "vcc/utils/detail/location_class_id.h"
-#include <vcc/detail/exports.h>
+#include "vcc/detail/exports.h"
 #include <filesystem>
 #include <variant>
 #include <optional>

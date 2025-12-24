@@ -62,9 +62,9 @@ vcc_hard_disk_cartridge::vcc_hard_disk_cartridge(
 	std::unique_ptr<expansion_port_bus_type> bus,
 	HINSTANCE module_instance)
 	:
-	host_(move(host)),
-	ui_(move(ui)),
-	bus_(move(bus)),
+	host_(std::move(host)),
+	ui_(std::move(ui)),
+	bus_(std::move(bus)),
 	module_instance_(module_instance)
 { }
 
@@ -250,7 +250,6 @@ void vcc_hard_disk_cartridge::LoadConfig()
 
     // Verify HD0 image file exists and mount it.
     GetPrivateProfileString(gConfigurationSection,"VHDImage" ,"",VHDfile0,MAX_PATH,IniFile);
-    CheckPath(VHDfile0);
     hr = CreateFile (VHDfile0,0,FILE_SHARE_READ,nullptr,
                      OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr);
     if (hr==INVALID_HANDLE_VALUE) {
@@ -263,7 +262,6 @@ void vcc_hard_disk_cartridge::LoadConfig()
 
     // Verify HD1 image file exists and mount it.
     GetPrivateProfileString(gConfigurationSection,"VHDImage1","",VHDfile1,MAX_PATH,IniFile);
-    CheckPath(VHDfile1);
     hr = CreateFile (VHDfile1,0,FILE_SHARE_READ,nullptr,
                      OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr);
     if (hr==INVALID_HANDLE_VALUE) {

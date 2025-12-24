@@ -65,9 +65,9 @@ rs232pak_cartridge::rs232pak_cartridge(
 	std::unique_ptr<expansion_port_bus_type> bus,
 	HINSTANCE module_instance)
 	:
-	host_(move(host)),
-	ui_(move(ui)),
-	bus_(move(bus)),
+	host_(std::move(host)),
+	ui_(std::move(ui)),
+	bus_(std::move(bus)),
 	module_instance_(module_instance)
 {
 }
@@ -170,7 +170,7 @@ rs232pak_cartridge::status_type rs232pak_cartridge::status() const
 //-----------------------------------------------------------------------
 //  Dll export run config dialog
 //-----------------------------------------------------------------------
-void rs232pak_cartridge::menu_item_clicked(menu_item_id_type menuId)
+void rs232pak_cartridge::menu_item_clicked([[maybe_unused]] menu_item_id_type menuId)
 {
     HWND owner = GetActiveWindow();
     CreateDialog(gModuleInstance,(LPCTSTR)IDD_PROPPAGE,owner,(DLGPROC)Config);

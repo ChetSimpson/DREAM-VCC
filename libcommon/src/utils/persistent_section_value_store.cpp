@@ -27,7 +27,7 @@ namespace vcc::utils
 		section_type section)
 		:
 		store_(std::move(path)),
-		section_(move(section))
+		section_(std::move(section))
 	{}
 
 

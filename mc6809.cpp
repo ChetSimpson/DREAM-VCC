@@ -33,9 +33,8 @@ This file is part of VCC (Virtual Color Computer).
 #define OTEST16(c,a,b,r) c ^ (((a^b^r)>>15)&1)
 #define ZTEST(r) !r
 
-// Quiet legacy compiler warning about forcing int value to bool
-#pragma warning( disable : 4800 )
 
+// FIXME-CHET: The usage of this type results in undefined behavior. Replace.
 typedef union
 {
 	unsigned short Reg;

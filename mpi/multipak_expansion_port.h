@@ -34,12 +34,12 @@ namespace vcc::cartridges::multipak
 
 		using expansion_port::expansion_port;
 
-		/// @@inheritdoc
+		/// @inheritdoc
 		void insert(managed_handle_type handle, cartridge_ptr_type cartridge) override
 		{
 			dual_scoped_lock_type lock(cartridge_mutex_, driver_mutex_);
 
-			expansion_port::insert(move(handle), move(cartridge));
+			expansion_port::insert(std::move(handle), std::move(cartridge));
 			line_state_ = false;
 		}
 

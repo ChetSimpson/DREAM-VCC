@@ -15,7 +15,6 @@
 //	You should have received a copy of the GNU General Public License along with
 //	VCC (Virtual Color Computer). If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////
-#pragma once
 #include "vcc/ui/menu/menu_builder.h"
 
 
@@ -87,8 +86,8 @@ namespace vcc::ui::menu
 	menu_builder& menu_builder::add_item(bool in_root, item_id_type id, string_type text, icon_type icon, bool disabled)
 	{
 		return in_root
-			? add_root_item(id, move(text), icon, disabled)
-			: add_submenu_item(id, move(text), icon, disabled);
+			? add_root_item(id, std::move(text), icon, disabled)
+			: add_submenu_item(id, std::move(text), icon, disabled);
 	}
 
 	menu_builder& menu_builder::add_separator(bool in_root)
@@ -98,7 +97,7 @@ namespace vcc::ui::menu
 
 	menu_builder& menu_builder::add_root_submenu(string_type text, icon_type icon)
 	{
-		add_item(category_type::root_sub_menu, 0, move(text), icon);
+		add_item(category_type::root_sub_menu, 0, std::move(text), icon);
 
 		return *this;
 	}
@@ -112,7 +111,7 @@ namespace vcc::ui::menu
 	
 	menu_builder& menu_builder::add_root_item(item_id_type id, string_type text, icon_type icon, bool disabled)
 	{
-		add_item(category_type::root_menu_item, id, move(text), icon, disabled);
+		add_item(category_type::root_menu_item, id, std::move(text), icon, disabled);
 
 		return *this;
 	}
@@ -126,7 +125,7 @@ namespace vcc::ui::menu
 
 	menu_builder& menu_builder::add_submenu_item(item_id_type id, string_type text, icon_type icon, bool disabled)
 	{
-		add_item(category_type::sub_menu_item, id, move(text), icon, disabled);
+		add_item(category_type::sub_menu_item, id, std::move(text), icon, disabled);
 
 		return *this;
 	}
@@ -142,7 +141,7 @@ namespace vcc::ui::menu
 
 	menu_builder::item_collection_type menu_builder::release_items()
 	{
-		return menu_item_collection(move(items_));
+		return menu_item_collection(std::move(items_));
 	}
 
 	void menu_builder::add_item(
@@ -152,7 +151,7 @@ namespace vcc::ui::menu
 		icon_type icon,
 		bool disabled)
 	{
-		items_.push_back(item_type{ move(text), id, category, icon, disabled });
+		items_.push_back(item_type{ std::move(text), id, category, icon, disabled });
 	}
 
 }

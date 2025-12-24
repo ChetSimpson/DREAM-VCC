@@ -40,7 +40,7 @@ namespace vcc::cartridges::fd502
 	};
 
 	fd502_configuration::fd502_configuration(path_type path, string_type section)
-		: value_store_(std::move(path), move(section))
+		: value_store_(std::move(path), std::move(section))
 	{
 	}
 

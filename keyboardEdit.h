@@ -31,19 +31,10 @@ Author of this file: E J Jaquay 2021
 #include <dinput.h>
 #include "resource.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 int SaveCustomKeyMap(const char* keymapfile);
 int LoadCustomKeyMap(const char* keymapfile);
 int CloneStandardKeymap(int keymap);
 BOOL CALLBACK KeyMapProc(HWND, UINT, WPARAM, LPARAM);
-
-#ifdef __cplusplus
-}
-#endif
 
 /*****************************************************************************/
 #endif  // _keyboardedit_h_

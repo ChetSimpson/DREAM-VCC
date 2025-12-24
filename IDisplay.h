@@ -24,12 +24,11 @@
 
 namespace VCC
 {
-	typedef std::uint32_t uint32_t;
-	typedef std::uint8_t uint8_t;
 
 	//
 	// A single pixel 32bit, alpha is unused
 	//
+	// FIXME-CHET: The usage of this type results in undefined behavior. Replace.
 	union Pixel
 	{
 		uint32_t pixel; // ARGB
@@ -43,7 +42,7 @@ namespace VCC
 
 		Pixel() = default;
 		explicit Pixel(uint32_t p) : pixel(p) {}
-		Pixel(uint8_t r, uint8_t g, uint8_t b) : a(255), r(r), g(g), b(b) {}
+		Pixel(uint8_t r, uint8_t g, uint8_t b) : b(b), g(g), r(r), a(255) {}
 		bool operator==(const Pixel& o) const { return o.pixel == pixel; }
 		bool operator!=(const Pixel& o) const { return !operator==(o); }
 	};

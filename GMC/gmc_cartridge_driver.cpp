@@ -28,7 +28,7 @@ namespace vcc::cartridges::gmc
 {
 
 	gmc_cartridge_driver::gmc_cartridge_driver(std::unique_ptr<expansion_port_bus_type> bus)
-		: bus_(move(bus))
+		: bus_(std::move(bus))
 	{
 		if (bus_ == nullptr)
 		{

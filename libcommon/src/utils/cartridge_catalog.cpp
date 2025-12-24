@@ -15,8 +15,8 @@
 //	You should have received a copy of the GNU General Public License along with
 //	VCC (Virtual Color Computer). If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////
-#include <vcc/utils/cartridge_catalog.h>
-#include <vcc/utils/exception.h>
+#include "vcc/utils/cartridge_catalog.h"
+#include "vcc/utils/exception.h"
 #include <Windows.h>
 #include <ranges>
 

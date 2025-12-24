@@ -29,21 +29,19 @@ This file is part of VCC (Virtual Color Computer).
 constexpr auto MAX_LOADSTRING = 400u;
 
 //Speed throttling
-constexpr auto FRAMEINTERVAL = 120u;	//Number of frames to sum the framecounter over
-constexpr auto TARGETFRAMERATE = 60u;	//Number of throttled Frames per second to render
-constexpr auto SAMPLESPERFRAME = 262u;
-
-#pragma warning(disable: 4100)
+static constexpr auto FRAMEINTERVAL = 120u;	//Number of frames to sum the framecounter over
+static constexpr auto TARGETFRAMERATE = 60u;	//Number of throttled Frames per second to render
+static constexpr auto SAMPLESPERFRAME = 262u;
 
 
 //CPU 
-constexpr auto FRAMESPERSECORD = 59.923;	//The coco really runs at about 59.923 Frames per second
-constexpr auto LINESPERSCREEN = 262.0;
-constexpr auto NANOSECOND = 1000000000.0;
-constexpr auto COLORBURST = 3579545.0;
-constexpr auto AUDIOBUFFERS = 12u;
+static constexpr auto FRAMESPERSECORD = 59.923;	//The coco really runs at about 59.923 Frames per second
+static constexpr auto LINESPERSCREEN = 262.0;
+static constexpr auto NANOSECOND = 1000000000.0;
+static constexpr auto COLORBURST = 3579545.0;
+static constexpr auto AUDIOBUFFERS = 12u;
 //Misc
-constexpr auto QUERY = 255u;
+static constexpr auto QUERY = 255u;
 
 struct SystemState;
 
@@ -91,6 +89,7 @@ namespace VCC
     // bounds checking array type
     //
     template <class T, size_t Size>
+	requires std::is_pod_v<T>
     struct Array
     {
         void MemCpyFrom(const void* buffer, size_t bytes)
@@ -158,7 +157,7 @@ namespace VCC
 		virtual ~ISystemState() = default;
 
         virtual int GetWindowHandle(void** handle) = 0;
-        virtual int GetRect(int rectOption, Rect* rect) = 0;
+        virtual int GetRect(Rect* rect) = 0;
         virtual void SetSurface(void* ptr, uint8_t bitDepth, long stride) = 0;
     };
 }
@@ -213,7 +212,7 @@ struct SystemStatePtr : VCC::ISystemState
         *handle = state->WindowHandle; 
         return OK; 
     }
-    int GetRect(int rectOption, VCC::Rect* rect) override 
+    int GetRect(VCC::Rect* rect) override 
     {
         rect->x = 0; rect->y = 0; rect->w = state->WindowSize.w; rect->h = state->WindowSize.h; 
         return OK; 

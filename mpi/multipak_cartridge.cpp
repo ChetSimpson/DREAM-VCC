@@ -15,7 +15,6 @@
 //	You should have received a copy of the GNU General Public License along with
 //	VCC (Virtual Color Computer). If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////
-#pragma once
 #include "multipak_cartridge.h"
 #include "multipak_configuration.h"
 #include "multipak_expansion_port_ui.h"
@@ -492,10 +491,10 @@ namespace vcc::cartridges::multipak
 
 		eject_cartridge(slot, false, false);
 
-		cartridges_[slot] = move(loadedCartridge.cartridge);
+		cartridges_[slot] = std::move(loadedCartridge.cartridge);
 		driver_->insert_cartridge(
 			slot,
-			move(loadedCartridge.handle),
+			std::move(loadedCartridge.handle),
 			cartridges_[slot],
 			allow_reset);
 

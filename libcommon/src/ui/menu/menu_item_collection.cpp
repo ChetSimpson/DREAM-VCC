@@ -23,7 +23,7 @@ namespace vcc::ui::menu
 {
 
 	menu_item_collection::menu_item_collection(item_container_type items)
-		: items_(move(items))
+		: items_(std::move(items))
 	{}
 
 	bool menu_item_collection::empty() const
@@ -68,10 +68,9 @@ namespace vcc::ui::menu
 
 		for (const auto& item : items_)
 		{
-			switch (item.type)
+			if(item.type == category_type::sub_menu_item
+			   || item.type == category_type::root_menu_item)
 			{
-			case category_type::sub_menu_item:
-			case category_type::root_menu_item:
 				visitor(item.id, item.text, item.icon, item.disabled);
 			}
 		}

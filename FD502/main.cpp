@@ -47,15 +47,15 @@ extern "C" __declspec(dllexport) ::vcc::bus::cartridge_plugin_factory_prototype 
 				host->configuration_path(),
 				"Cartridges.FD502"));
 
-			std::shared_ptr<::vcc::bus::expansion_port_bus> shared_bus(move(bus));
+			std::shared_ptr<::vcc::bus::expansion_port_bus> shared_bus(std::move(bus));
 			auto driver(std::make_unique<::vcc::cartridges::fd502::fd502_cartridge_driver>(host, shared_bus));
 
 			return std::make_unique<::vcc::cartridges::fd502::fd502_cartridge>(
-				move(host),
-				move(ui),
+				std::move(host),
+				std::move(ui),
 				shared_bus,
-				move(driver),
-				move(configuration),
+				std::move(driver),
+				std::move(configuration),
 				gModuleInstance);
 		};
 }

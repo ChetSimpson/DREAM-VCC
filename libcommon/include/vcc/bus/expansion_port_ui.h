@@ -50,7 +50,7 @@ namespace vcc::bus
 		/// image selected by the user.
 		/// 
 		/// @return the path to the directory containing the last ROM image.
-		virtual [[nodiscard]] path_type last_accessed_rompak_path() const = 0;
+		[[nodiscard]] virtual path_type last_accessed_rompak_path() const = 0;
 
 		/// @brief Set the path to the directory containing the last ROM
 		/// image selected by the user.

@@ -38,10 +38,10 @@ namespace vcc::bus::cartridges
 		/// @brief Retrieves the name of the cartridge.
 		/// 
 		/// @return An empty string.
-		LIBCOMMON_EXPORT [[nodiscard]] name_type name() const override;
+		[[nodiscard]] LIBCOMMON_EXPORT name_type name() const override;
 
 		/// @inheritdoc
-		LIBCOMMON_EXPORT [[nodiscard]] driver_type& driver() override;
+		[[nodiscard]] LIBCOMMON_EXPORT driver_type& driver() override;
 
 
 	public:

@@ -17,9 +17,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "configuration_dialog.h"
 #include "resource.h"
-#include <vcc/common/DialogOps.h>
-#include <vcc/ui/select_file_dialog.h>
-#include <vcc/utils/winapi.h>
+#include "vcc/common/DialogOps.h"
+#include "vcc/ui/select_file_dialog.h"
+#include "vcc/utils/winapi.h"
 
 
 namespace vcc::cartridges::fd502
@@ -52,9 +52,9 @@ namespace vcc::cartridges::fd502
 		settings_changed_function_type settings_changed)
 		:
 		dialog_window(module_handle, IDD_SETTINGS),
-		configuration_(move(configuration)),
-		driver_(move(driver)),
-		settings_changed_(move(settings_changed))
+		configuration_(std::move(configuration)),
+		driver_(std::move(driver)),
+		settings_changed_(std::move(settings_changed))
 	{
 		if (configuration_ == nullptr)
 		{

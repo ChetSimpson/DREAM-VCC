@@ -34,7 +34,6 @@ static unsigned char BaseAddress=0x50;
 static LRESULT CALLBACK Config(HWND, UINT, WPARAM, LPARAM );
 static void Select_Disk(unsigned char);
 static void SaveConfig();
-static void LoadConfig();
 static unsigned char BaseTable[4]={0x40,0x50,0x60,0x70};
 
 static unsigned char BaseAddr=1;
@@ -51,9 +50,9 @@ superide_cartridge::superide_cartridge(
 	std::unique_ptr<expansion_port_bus_type> bus,
 	HINSTANCE module_instance)
 	:
-	host_(move(host)),
-	ui_(move(ui)),
-	bus_(move(bus)),
+	host_(std::move(host)),
+	ui_(std::move(ui)),
+	bus_(std::move(bus)),
 	module_instance_(module_instance)
 {
 }

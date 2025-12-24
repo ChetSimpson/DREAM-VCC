@@ -1,8 +1,8 @@
-#include <vcc/media/geometry_calculators/floppy_disk_geometry_calculator.h>
-#include <vcc/media/disk_images/generic_disk_image.h>
-#include <vcc/media/geometry/generic_disk_geometry.h>
-#include <vcc/utils/disk_image_loader.h>
-#include <vcc/utils/streams.h>
+#include "vcc/media/geometry_calculators/floppy_disk_geometry_calculator.h"
+#include "vcc/media/disk_images/generic_disk_image.h"
+#include "vcc/media/geometry/generic_disk_geometry.h"
+#include "vcc/utils/disk_image_loader.h"
+#include "vcc/utils/streams.h"
 #include <array>
 #include <fstream>
 
@@ -57,7 +57,7 @@ namespace vcc::utils
 		}
 
 		return std::make_unique<::vcc::media::disk_images::generic_disk_image>(
-			move(image_stream),
+			std::move(image_stream),
 			geometry->geometry,
 			geometry->image_file_data_offset,
 			first_valid_sector_id,

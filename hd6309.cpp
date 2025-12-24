@@ -72,6 +72,7 @@ This file is part of VCC (Virtual Color Computer).
 #define M42 22
 #define M53 23
 
+// FIXME-CHET: The usage of this type results in undefined behavior. Replace.
 typedef union
 {
 	unsigned short Reg;
@@ -81,6 +82,7 @@ typedef union
 	} B;
 } cpuregister;
 
+// FIXME-CHET: The usage of this type results in undefined behavior. Replace.
 typedef union
 {
 	unsigned int Reg;
@@ -110,7 +112,6 @@ typedef union
 #define O_REG	z.Reg
 #define DP_REG	dp.B.msb
 
-static char RegName[16][10]={"D","X","Y","U","S","PC","W","V","A","B","CC","DP","ZERO","ZERO","E","F"};
 
 static wideregister q;
 static cpuregister pc, x, y, u, s, dp, v, z;
@@ -124,7 +125,6 @@ static int CycleCounter=0;
 static unsigned int SyncWaiting=0;
 unsigned short temp16;
 static signed short stemp16;
-static signed char stemp8;
 static unsigned int  temp32;
 static int stemp32;
 static unsigned char temp8; 
@@ -220,7 +220,7 @@ unsigned int MemRead32(unsigned short);
 
 void HD6309Reset()
 {
-	char index;
+	unsigned char index;
 	for(index=0;index<=6;index++)		//Set all register to 0 except V
 		*xfreg16[index] = 0;
 	for(index=0;index<=7;index++)

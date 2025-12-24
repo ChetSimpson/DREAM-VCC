@@ -46,10 +46,10 @@ namespace vcc::media::disk_images
 		bool write_protected)
 		:
 		disk_image(geometry, first_valid_sector_id, write_protected),
-		stream_ptr_(validate_stream_argument(move(stream))),
+		stream_ptr_(validate_stream_argument(std::move(stream))),
 		stream_(*stream_ptr_.get()),
 		file_size_(::vcc::utils::get_stream_size(stream_)),
-		track_data_offset_(move(track_data_offset)),
+		track_data_offset_(std::move(track_data_offset)),
 		sector_count_(geometry.sector_count),
 		track_size_(geometry.sector_count * geometry.sector_size),
 		sector_size_(geometry.sector_size)
@@ -303,7 +303,7 @@ namespace vcc::media::disk_images
 			}
 		}
 
-		auto last_result(error_id_type::success);
+		[[maybe_unused]] auto last_result(error_id_type::success);
 		for (const auto& sector : sectors)
 		{
 			// TODO-CHET: This is a placeholder. A more robust solution is needed to support other disk

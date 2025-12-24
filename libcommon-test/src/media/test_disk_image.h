@@ -45,72 +45,72 @@ public:
 	//}
 
 	[[nodiscard]] bool is_valid_sector_record(
-		size_type disk_head,
-		size_type disk_track,
-		size_type head_id,
-		size_type track_id,
-		size_type sector_id) const noexcept override
+		[[maybe_unused]] size_type disk_head,
+		[[maybe_unused]] size_type disk_track,
+		[[maybe_unused]] size_type head_id,
+		[[maybe_unused]] size_type track_id,
+		[[maybe_unused]] size_type sector_id) const noexcept override
 	{
 		return false;
 	}
 
 	/// @inheritdoc
 	[[nodiscard]] size_type get_sector_size(
-		size_type disk_head,
-		size_type disk_track,
-		size_type head_id,
-		size_type track_id,
-		size_type sector_id) const override
+		[[maybe_unused]] size_type disk_head,
+		[[maybe_unused]] size_type disk_track,
+		[[maybe_unused]] size_type head_id,
+		[[maybe_unused]] size_type track_id,
+		[[maybe_unused]] size_type sector_id) const override
 	{
 		throw std::runtime_error("Cannot test abstract member function.");
 	}
 
 	/// @inheritdoc
 	[[nodiscard]] std::optional<sector_record_header_type> query_sector_header_by_index(
-		size_type disk_head,
-		size_type disk_track,
-		size_type disk_sector) const override
+		[[maybe_unused]] size_type disk_head,
+		[[maybe_unused]] size_type disk_track,
+		[[maybe_unused]] size_type disk_sector) const override
 	{
 		throw std::runtime_error("Cannot test abstract member function.");
 	}
 
 	/// @inheritdoc
 	[[nodiscard]] error_id_type read_sector(
-		size_type disk_head,
-		size_type disk_track,
-		size_type head_id,
-		size_type track_id,
-		size_type sector_id,
-		buffer_type& data_buffer) override
+		[[maybe_unused]] size_type disk_head,
+		[[maybe_unused]] size_type disk_track,
+		[[maybe_unused]] size_type head_id,
+		[[maybe_unused]] size_type track_id,
+		[[maybe_unused]] size_type sector_id,
+		[[maybe_unused]] buffer_type& data_buffer) override
 	{
 		throw std::runtime_error("Cannot test abstract member function.");
 	}
 
 	/// @inheritdoc
 	[[nodiscard]] error_id_type write_sector(
-		size_type disk_head,
-		size_type disk_track,
-		size_type head_id,
-		size_type track_id,
-		size_type sector_id,
-		const buffer_type& data_buffer) override
+		[[maybe_unused]] size_type disk_head,
+		[[maybe_unused]] size_type disk_track,
+		[[maybe_unused]] size_type head_id,
+		[[maybe_unused]] size_type track_id,
+		[[maybe_unused]] size_type sector_id,
+		[[maybe_unused]] const buffer_type& data_buffer) override
 	{
 		throw std::runtime_error("Cannot test abstract member function.");
 	}
 
 	/// @inheritdoc
 	[[nodiscard]] sector_record_vector read_track(
-		size_type disk_head,
-		size_type disk_track) override
+		[[maybe_unused]] size_type disk_head,
+		[[maybe_unused]] size_type disk_track) override
 	{
 		throw std::runtime_error("Cannot test abstract member function.");
 	}
 
 	/// @inheritdoc
 	void write_track(
-		size_type disk_head,
-		size_type disk_track,
-		const sector_record_vector& sectors) override
+		[[maybe_unused]] size_type disk_head,
+		[[maybe_unused]] size_type disk_track,
+		[[maybe_unused]] const sector_record_vector& sectors) override
 	{
 		throw std::runtime_error("Cannot test abstract member function.");
 	}
@@ -118,8 +118,8 @@ public:
 protected:
 
 	size_type get_sector_count_unchecked(
-		size_type disk_head,
-		size_type disk_track) const noexcept override
+		[[maybe_unused]] size_type disk_head,
+		[[maybe_unused]] size_type disk_track) const noexcept override
 	{
 		return 0;
 	}

@@ -1,7 +1,7 @@
 #pragma once
-#include <vcc/peripherals/disk_drive.h>
-#include <vcc/media/disk_image.h>
-#include <vcc/media/disk_geometry.h>
+#include "vcc/peripherals/disk_drive.h"
+#include "vcc/media/disk_image.h"
+#include "vcc/media/disk_geometry.h"
 #include <queue>
 #include <string>
 #include <array>

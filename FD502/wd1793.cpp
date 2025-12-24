@@ -17,8 +17,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "wd1793.h"
 #include "wd1793defs.h"
-#include <vcc/media/disk_images/placeholder_disk_image.h>
-#include <vcc/utils/disk_image_loader.h>
+#include "vcc/media/disk_images/placeholder_disk_image.h"
+#include "vcc/utils/disk_image_loader.h"
 
 
 namespace vcc::cartridges::fd502
@@ -26,7 +26,7 @@ namespace vcc::cartridges::fd502
 
 	wd1793_device::wd1793_device(std::shared_ptr<::vcc::bus::expansion_port_bus> bus)
 		:
-		bus_(move(bus)),
+		bus_(std::move(bus)),
 		placeholder_drive_(std::make_unique<::vcc::media::disk_images::placeholder_disk_image>()),
 		disk_drives_{
 			disk_drive_device_type(std::make_unique<::vcc::media::disk_images::placeholder_disk_image>()),
@@ -123,7 +123,7 @@ namespace vcc::cartridges::fd502
 			throw std::invalid_argument("Cannot insert disk. File path is empty.");
 		}
 
-		disk_drives_[drive_id].insert(move(disk_image), std::move(file_path));
+		disk_drives_[drive_id].insert(std::move(disk_image), std::move(file_path));
 	}
 
 	void wd1793_device::eject_disk(drive_id_type drive_id)
@@ -858,10 +858,12 @@ namespace vcc::cartridges::fd502
 				++data_offset;
 
 				sectors.push_back({
-					writing_head,
-					writing_track,
-					writing_sector,
-					writing_sector_size,
+					{
+						writing_head,
+						writing_track,
+						writing_sector,
+						writing_sector_size
+					},
 					disk_image_type::buffer_type(&data_buffer[data_offset], &data_buffer[data_offset + writing_sector_size]) });
 
 				data_offset += writing_sector_size;
@@ -928,12 +930,12 @@ namespace vcc::cartridges::fd502
 		}
 	}
 
-	void wd1793_device::complete_command(std::optional<unsigned char> status_flags)
+	void wd1793_device::complete_command(std::optional<command_status_type> status_flags)
 	{
 		// FIXME-CHET: Validate there is a command executing and throw if not.
 		if (status_flags.has_value())
 		{
-			registers_.status = status_flags.value();
+			registers_.status = static_cast<decltype(registers_.status)>(status_flags.value());
 		}
 
 		if (control_register_.interupt_enabled())

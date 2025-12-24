@@ -33,7 +33,7 @@ namespace vcc::devices::rom
 		}
 
 		filename_ = std::move(filename);
-		data_ = move(*rom_data);
+		data_ = std::move(*rom_data);
 
 		return true;
 	}

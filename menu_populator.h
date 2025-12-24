@@ -17,8 +17,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "vcc/ui/menu/menu_item_visitor.h"
+#include "vcc/utils/winapi.h"
 #include <Windows.h>
-#include <vcc/utils/winapi.h>
 
 
 class menu_populator : public ::vcc::ui::menu::menu_item_visitor

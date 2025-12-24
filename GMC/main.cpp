@@ -45,9 +45,9 @@ extern "C" __declspec(dllexport) ::vcc::bus::cartridge_plugin_factory_prototype 
 		std::unique_ptr<::vcc::bus::expansion_port_bus> bus) -> ::vcc::bus::cartridge_factory_result
 		{
 			return std::make_unique<::vcc::cartridges::gmc::gmc_cartridge>(
-				move(host),
-				move(ui),
-				move(bus),
+				std::move(host),
+				std::move(ui),
+				std::move(bus),
 				gModuleInstance);
 		};
 }

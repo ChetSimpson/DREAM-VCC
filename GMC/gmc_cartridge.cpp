@@ -33,10 +33,10 @@ namespace vcc::cartridges::gmc
 		std::unique_ptr<expansion_port_bus_type> bus,
 		HINSTANCE module_instance)
 		:
-		host_(move(host)),
-		ui_(move(ui)),
+		host_(std::move(host)),
+		ui_(std::move(ui)),
 		module_instance_(module_instance),
-		driver_(move(bus))
+		driver_(std::move(bus))
 	{
 		if (host_ == nullptr)
 		{

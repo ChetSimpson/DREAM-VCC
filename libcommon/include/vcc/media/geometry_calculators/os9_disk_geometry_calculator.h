@@ -1,5 +1,5 @@
 #pragma once
-#include <vcc/media/geometry_calculator.h>
+#include "vcc/media/geometry_calculator.h"
 
 
 namespace vcc::media::geometry_calculators

@@ -96,7 +96,7 @@ namespace VCC
 		std::vector<Line> debugLines;
 		#endif // USE_DEBUG_LINES
 
-		OpenGL::Detail(ISystemState *state)
+		Detail(ISystemState *state)
 			: isInitialized(false), hWnd(nullptr), hDC(nullptr), hRC(nullptr)
 			, width(0), height(0), statusHeight(0), aspect(true), ntsc(false)
 			, pixels(nullptr), texId(0), wglSwapIntervalEXT(nullptr), state(state)

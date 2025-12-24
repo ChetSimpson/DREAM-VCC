@@ -32,7 +32,7 @@ namespace vcc::cartridges::multipak
 		/// 
 		/// @param host_ui A pointer to the cartridge hosts UI service.
 		explicit multipak_expansion_port_ui(std::shared_ptr<::vcc::bus::expansion_port_ui> host_ui)
-			: host_ui_(move(host_ui))
+			: host_ui_(std::move(host_ui))
 		{
 			if (host_ui_ == nullptr)
 			{

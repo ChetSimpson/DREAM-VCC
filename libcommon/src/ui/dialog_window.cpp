@@ -1,6 +1,6 @@
 #include "vcc/ui/dialog_window.h"
-#include <vcc/utils/winapi.h>
-#include <vcc/common/DialogOps.h>
+#include "vcc/utils/winapi.h"
+#include "vcc/common/DialogOps.h"
 
 
 namespace vcc::ui

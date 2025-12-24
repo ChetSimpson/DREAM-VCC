@@ -197,7 +197,7 @@ namespace VCC
             return Result(ERR_UNKNOWN);
 
         VCC::Rect windowRect;
-        if (state->GetRect(1, &windowRect) != OK)
+        if (state->GetRect(&windowRect) != OK)
             return Result(ERR_UNKNOWN);
 
         ForcedAspectBorderPadding = { 0,0 };

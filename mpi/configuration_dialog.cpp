@@ -58,9 +58,9 @@ namespace vcc::cartridges::multipak
 		cartridge_controller_type& controller)
 		:
 		module_handle_(module_handle),
-		configuration_(move(configuration)),
-		bus_(move(bus)),
-		ui_(move(ui)),
+		configuration_(std::move(configuration)),
+		bus_(std::move(bus)),
+		ui_(std::move(ui)),
 		controller_(controller)
 	{
 		if (module_handle_ == nullptr)
@@ -169,7 +169,7 @@ namespace vcc::cartridges::multipak
 		controller_.select_and_insert_rompak_cartridge(slot_id);
 	}
 
-	void configuration_dialog::insert_device_cartridge(slot_id_type slot_id)
+	void configuration_dialog::insert_device_cartridge([[maybe_unused]] slot_id_type slot_id)
 	{
 		//controller_.select_and_insert_device_cartridge(slot_id);
 	}
@@ -195,7 +195,7 @@ namespace vcc::cartridges::multipak
 		HWND hDlg,
 		UINT message,
 		WPARAM wParam,
-		LPARAM lParam)
+		[[maybe_unused]] LPARAM lParam)
 	{
 		switch (message)
 		{

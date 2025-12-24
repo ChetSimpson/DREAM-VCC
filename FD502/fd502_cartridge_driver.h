@@ -17,8 +17,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "vcc/devices/rom/rom_image.h"
-#include <vcc/devices/rtc/oki_m6242b.h>
-#include <vcc/devices/serial/beckerport.h>
+#include "vcc/devices/rtc/oki_m6242b.h"
+#include "vcc/devices/serial/beckerport.h"
 #include "vcc/bus/cartridge_driver.h"
 #include "vcc/bus/expansion_port_bus.h"
 #include "vcc/bus/expansion_port_ui.h"
@@ -106,13 +106,13 @@ namespace vcc::cartridges::fd502
 		/// @param delta The time delta since the last call to `update`.
 		void update(float delta) override;
 
-		/// @@inheitdoc
+		/// @inheritdoc
 		unsigned char read_memory_byte(size_type memory_address) override;
 
-		/// @@inheitdoc
+		/// @inheritdoc
 		void write_port(unsigned char port_id, unsigned char value) override;
 
-		/// @@inheitdoc
+		/// @inheritdoc
 		unsigned char read_port(unsigned char port_id) override;
 
 		/// @brief Insert a disk image into a specific drive.

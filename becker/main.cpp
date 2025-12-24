@@ -18,8 +18,8 @@
 #include "becker_cartridge.h"
 #include "resource.h"
 #include "vcc/bus/cartridge_factory.h"
+#include "vcc/utils/winapi.h"
 #include <Windows.h>
-#include <vcc/utils/winapi.h>
 
 
 static HINSTANCE gModuleInstance;
@@ -46,7 +46,9 @@ extern "C" __declspec(dllexport) ::vcc::bus::cartridge_plugin_factory_prototype 
 		std::unique_ptr<::vcc::bus::expansion_port_ui> ui,
 		[[maybe_unused]] std::unique_ptr<::vcc::bus::expansion_port_bus> bus) -> ::vcc::bus::cartridge_factory_result
 		{
-			return std::make_unique<::vcc::cartridges::becker_port::becker_cartridge>(move(host), move(ui), gModuleInstance);
+			return std::make_unique<::vcc::cartridges::becker_port::becker_cartridge>(
+				std::move(host), 
+				std::move(ui), gModuleInstance);
 		};
 }
 

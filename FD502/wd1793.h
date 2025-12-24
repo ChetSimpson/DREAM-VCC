@@ -21,7 +21,7 @@
 #include "fdc_register_file.h"
 #include "fdc_command.h"
 #include "vcc/bus/expansion_port_bus.h"
-#include <vcc/peripherals/disk_drives/generic_disk_drive.h>
+#include "vcc/peripherals/disk_drives/generic_disk_drive.h"
 #include <Windows.h>
 #include <array>
 #include <string>
@@ -50,6 +50,8 @@ namespace vcc::cartridges::fd502
 		using drive_id_type = std::size_t;
 		/// @brief Type alias for drive head identifiers.
 		using head_id_type = std::size_t;
+		/// @brief Type alias for the status set when a command completes.
+		using command_status_type = std::size_t;
 		/// @brief Type alias for the disk drive device used by the controller.
 		/// @todo this should really be vcc::peripherals::disk_drive
 		using disk_drive_device_type = ::vcc::peripherals::disk_drives::generic_disk_drive;
@@ -376,7 +378,7 @@ namespace vcc::cartridges::fd502
 		/// device.
 		/// 
 		/// @param status_flags Additional status flags to set.
-		void complete_command(std::optional<unsigned char> status_flags);
+		void complete_command(std::optional<command_status_type> status_flags);
 
 		/// @brief Retrieve the size of a sector.
 		/// 

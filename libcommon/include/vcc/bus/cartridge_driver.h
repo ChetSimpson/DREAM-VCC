@@ -70,7 +70,7 @@ namespace vcc::bus
 		/// 
 		/// @return The value at the location specified in `memory_address`, if memory at
 		/// that address exists; otherwise the return value is implementation defined.
-		virtual [[nodiscard]] unsigned char read_memory_byte(size_type memory_address);
+		[[nodiscard]] virtual unsigned char read_memory_byte(size_type memory_address);
 
 		/// @brief Write a byte value to an I/O port.
 		/// 
@@ -103,7 +103,7 @@ namespace vcc::bus
 		/// 
 		/// @return If the port specified in `port_id` is supported by the cartridge a
 		/// byte value mirroring the contents of the port; otherwise 0 (zero).
-		virtual [[nodiscard]] unsigned char read_port(unsigned char port_id);
+		[[nodiscard]] virtual unsigned char read_port(unsigned char port_id);
 
 		/// @brief Process a horizontal sync signal.
 		///
@@ -136,7 +136,7 @@ namespace vcc::bus
 		/// @todo Add exception information. Need custom exceptions first.
 		/// 
 		/// @return The stereo waveform sample data.
-		virtual [[nodiscard]] sample_type sample_audio();
+		[[nodiscard]] virtual sample_type sample_audio();
 	};
 
 }

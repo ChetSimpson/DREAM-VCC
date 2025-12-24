@@ -132,15 +132,15 @@ TEST_F(test_generic_disk_image, first_valid_sector_id_property)
 {
 	EXPECT_EQ(
 		generic_disk_image(create_stream(buffer_stream_, test_geometry_), test_geometry_, 0, 0).first_valid_sector_id(),
-		0);
+		0u);
 
 	EXPECT_EQ(
 		generic_disk_image(create_stream(buffer_stream_, test_geometry_), test_geometry_, 0, 1).first_valid_sector_id(),
-		1);
+		1u);
 
 	EXPECT_EQ(
 		generic_disk_image(create_stream(buffer_stream_, test_geometry_), test_geometry_, 0, 5).first_valid_sector_id(),
-		5);
+		5u);
 }
 
 // Validates the size of each sector on the disk can be retrieved.

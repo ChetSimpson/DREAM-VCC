@@ -56,16 +56,6 @@ namespace VCC::Debugger::UI { namespace
 	std::map<int, int> mapLineAddr;
 	std::map<int, int> mapAddrLine;
 
-	std::vector<std::string> split(const std::string& input, const std::string& rgx) 
-	{
-		// passing -1 as the submatch index parameter performs splitting
-		std::regex re(rgx);
-		std::sregex_token_iterator
-			first{ input.begin(), input.end(), re, -1 },
-			last;
-		return { first, last };
-	}
-
 	void ResizeWindow(int width, int height)
 	{
 		HWND hCtl = GetDlgItem(hWndSourceDebug, IDC_SOURCE_LISTING);
@@ -144,13 +134,13 @@ namespace VCC::Debugger::UI { namespace
 	{
 		CHARFORMAT fmt;
 		fmt.cbSize = sizeof(CHARFORMAT);
-		LRESULT lResult = SendDlgItemMessage(hWndSourceDebug, IDC_SOURCE_LISTING, EM_GETCHARFORMAT, SCF_DEFAULT, (LPARAM)&fmt);
+		SendDlgItemMessage(hWndSourceDebug, IDC_SOURCE_LISTING, EM_GETCHARFORMAT, SCF_DEFAULT, (LPARAM)&fmt);
 		strcpy(fmt.szFaceName, "Courier New");
 		fmt.yHeight = 10 * 20;
 		fmt.dwEffects = CFE_BOLD;
 		fmt.dwMask = CFM_BOLD | CFM_FACE | CFM_SIZE | CFM_COLOR;
 		fmt.crTextColor = RGB(255, 255, 255);
-		lResult = SendDlgItemMessage(hWndSourceDebug, IDC_SOURCE_LISTING, EM_SETCHARFORMAT, SCF_ASSOCIATEFONT, (LPARAM)&fmt);
+		SendDlgItemMessage(hWndSourceDebug, IDC_SOURCE_LISTING, EM_SETCHARFORMAT, SCF_ASSOCIATEFONT, (LPARAM)&fmt);
 
 		HWND hCtl = GetDlgItem(hWndSourceDebug, IDC_SOURCE_LISTING);
 

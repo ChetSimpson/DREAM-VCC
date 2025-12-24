@@ -79,7 +79,6 @@ static unsigned char LinesperScreen;
 static unsigned char TimerInteruptEnabled=0;
 static int MasterTimer=0; 
 static unsigned int TimerClockRate=0;
-static int TimerCycleCount=0;
 static double MasterTickCounter=0,UnxlatedTickCounter=0,OldMaster=0;
 static double NanosThisLine=0;
 static unsigned char BlinkPhase=1;
@@ -93,13 +92,11 @@ static int IntEnable=0;
 static int SndEnable=1;
 static int OverClock=1;
 static unsigned char SoundOutputMode=0;	//Default to Speaker 1= Cassette
-static double emulatedCycles;
 double TimeToHSYNCLow = 0;
 double TimeToHSYNCHigh = 0;
 static unsigned char LastMotorState;
 static int AudioFreeBlockCount;
 
-static int clipcycle = 1, cyclewait=2000;
 bool codepaste, PasteWithNew = false; 
 void AudioOut();
 void CassOut();
@@ -1081,7 +1078,7 @@ void CopyText() {
 		}
 	}
 	
-	bool succ = SetClipboard(out);
+	/*bool succ = */SetClipboard(out);
 }
 
 void PasteBASIC() {

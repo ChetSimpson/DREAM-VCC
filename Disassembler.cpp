@@ -1157,7 +1157,6 @@ void Disassemble( unsigned short FromAdr,
 
     unsigned short PC = FromAdr;
     NumDisLines = 0;
-    bool modhdr = false;
 
     state.block = Block;
     state.phyAddr = RealAdrMode;
@@ -1168,7 +1167,6 @@ void Disassemble( unsigned short FromAdr,
             std::string hdr;
             int hdrlen = DecodeModHdr(Block, PC, &hdr);
             if (hdrlen) {
-                modhdr = true;
                 PC += hdrlen;
             }
             sDecoded += hdr;
