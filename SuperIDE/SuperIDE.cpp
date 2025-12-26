@@ -21,7 +21,7 @@
 #include "vcc/devices/rtc/ds1315.h"
 #include "vcc/ui/menu/menu_builder.h"
 #include "vcc/utils/FileOps.h"
-#include "vcc/common/DialogOps.h"
+#include "vcc/ui/utility.h"
 #include "vcc/utils/winapi.h"
 #include <Windows.h>
 #include <iostream>
@@ -81,7 +81,7 @@ void superide_cartridge::stop()
 {
 	if (hConfDlg)
 	{
-		CloseCartDialog(hConfDlg);
+		::vcc::ui::close_cartridge_dialog_window(hConfDlg);
 		hConfDlg = nullptr;
 	}
 }
@@ -267,9 +267,15 @@ LRESULT CALLBACK Config(HWND hDlg, UINT message, WPARAM wParam, LPARAM /*lParam*
 	return 0;
 }
 
-void Select_Disk(unsigned char Disk)
+void Select_Disk([[maybe_unused]] unsigned char Disk)
 {
-	FileDialog dlg;
+	// TODO-CHET: Since the hard disk controller cartridge is currently not used and is
+	// pending rework/refactor, the updates to selecting and mounting disk images,
+	// associated UI, and other logic will be deferred until that time.
+	throw std::runtime_error("Not implemented");
+
+#if 0
+	::vcc::ui::select_file_dialog dlg;
 	dlg.setDefExt("IMG");
 	dlg.setTitle("Mount IDE hard Disk Image");
 	dlg.setFilter("Hard Disk Images\0*.img;*.vhd;*.os9\0All files\0*.*\0\0");
@@ -281,7 +287,7 @@ void Select_Disk(unsigned char Disk)
 			MessageBox(GetActiveWindow(),"Can't Open Image","Error",0);
 		}
 	}
-	return;
+#endif
 }
 
 void SaveConfig()

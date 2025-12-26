@@ -481,16 +481,23 @@ void CaptureBit(unsigned char Sample)
 	return;
 }
 
-int OpenPrintFile(const char *FileName)
+bool OpenPrintFile(const std::filesystem::path& path)
 {
-	hPrintFile=CreateFile( FileName,GENERIC_READ | GENERIC_WRITE,
-			FILE_SHARE_READ,nullptr,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,nullptr);
-	if (hPrintFile==INVALID_HANDLE_VALUE)
-		return 0;
-	return 1;
+	assert(hPrintFile == INVALID_HANDLE_VALUE);
+
+	hPrintFile = CreateFile(
+		path.string().c_str(),
+		GENERIC_READ | GENERIC_WRITE,
+		FILE_SHARE_READ,
+		nullptr,
+		CREATE_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL,
+		nullptr);
+	
+	return hPrintFile != INVALID_HANDLE_VALUE;
 }
 
-void ClosePrintFile()
+void ClosePrintSpoolFile()
 {
 	CloseHandle(hPrintFile);
 	hPrintFile=INVALID_HANDLE_VALUE;
