@@ -100,8 +100,6 @@ BOOL CALLBACK FunctionKeys(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM);
 
 void SoftReset();
-void LoadIniFile();
-void SaveConfig();
 unsigned __stdcall EmuLoop(HANDLE hEvent);
 void (*CPUInit)()=nullptr;
 int  (*CPUExec)( int)=nullptr;
@@ -484,11 +482,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					break;
 
 				case ID_FILE_LOAD:
-					LoadIniFile();
 					break;
 
                 case ID_SAVE_CONFIG:
-                    SaveConfig();
                     break;
 
 				case ID_COPY_TEXT:
@@ -1014,58 +1010,6 @@ unsigned char SetAutoStart(unsigned char Tmp)
 	return AutoStart;
 }
 
-// LoadIniFile allows user to browse for an ini file and reloads the config from it.
-void LoadIniFile()
-{
-	FileDialog dlg;
-	dlg.setFilter("INI\0*.ini\0\0");
-	dlg.setDefExt("ini");
-	dlg.setInitialDir(AppDirectory() );
-	dlg.setTitle(TEXT("Load Vcc Config File") );
-	dlg.setFlags(OFN_FILEMUSTEXIST);
-
-	// Send current ini file path to dialog
-	char curini[MAX_PATH]="";
-	GetIniFilePath(curini);
-	dlg.setpath(curini);
-
-	if ( dlg.show() ) {
-		WriteIniFile();             // Flush current profile
-		SetIniFilePath(dlg.path());   // Set new ini file path
-		ReadIniFile();              // Load it
-		UpdateConfig();
-		EmuState.ResetPending = 2;
-	}
-	return;
-}
-
-// SaveConfig copies the current ini file to a choosen ini file.
-void SaveConfig() {
-
-	FileDialog dlg;
-	dlg.setFilter("INI\0*.ini\0\0");
-	dlg.setDefExt("ini");
-	dlg.setInitialDir(AppDirectory() );
-	dlg.setTitle(TEXT("Save Vcc Config File") );
-	dlg.setFlags(OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT);
-
-	// Send current ini file path to dialog
-	char curini[MAX_PATH]="";
-	GetIniFilePath(curini);
-	dlg.setpath(curini);
-
-	if ( dlg.show(1) ) {
-		SetIniFilePath(dlg.path());   // Set new ini file path
-		WriteIniFile();             // Flush current profile
-		// If ini file has changed
-		if (_stricmp(curini,dlg.path()) != 0) {
-			// Copy current ini to new ini
-			if (! CopyFile(curini,dlg.path(),false) )
-				MessageBox(nullptr,"Copy config failed","error",0);
-		}
-	}
-	return;
-}
 
 unsigned __stdcall EmuLoop(HANDLE hEvent)
 {

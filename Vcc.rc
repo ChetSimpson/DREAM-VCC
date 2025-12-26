@@ -67,8 +67,8 @@ BEGIN
         MENUITEM "Keyboard Layout",             ID_KEYBOARD_CONFIG
         MENUITEM "Joystick Ports",              ID_JOYSTICKS_CONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Export Settings",             ID_SAVE_CONFIG
-        MENUITEM "Import Settings",             ID_FILE_LOAD
+        MENUITEM "Export Settings",             ID_SAVE_CONFIG, INACTIVE
+        MENUITEM "Import Settings",             ID_FILE_LOAD, INACTIVE
     END
     POPUP "Cartridge"
     BEGIN
