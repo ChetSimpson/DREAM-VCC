@@ -102,7 +102,7 @@ namespace vcc::ui
 		/// returned path is empty.
 		/// 
 		/// @return The path selected by the user or an empty path if the operation
-		/// was a canceled.
+		/// was canceled.
 		[[nodiscard]] LIBCOMMON_EXPORT path_type selected_path() const;
 
 		/// @brief Creates and shows a _Save_ dialog
