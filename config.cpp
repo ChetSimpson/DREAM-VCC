@@ -1173,7 +1173,12 @@ void SelectKeymapFile(HWND hDlg)
 		const auto& selected_path(select_dialog.selected_path());
 		if (std::filesystem::exists(selected_path))
 		{
-			LoadCustomKeyMap(selected_path.string().c_str());
+			// FIXME-CHET: The LoadCustomKeyMap may show a dialog if an
+			// error occurs. This should be handled better.
+			if(LoadCustomKeyMap(selected_path.string().c_str()) == 0)
+			{
+				SetKeyMapFilePath(selected_path.string().c_str());
+			}
 
 			return;
 		}
@@ -1185,7 +1190,13 @@ void SelectKeymapFile(HWND hDlg)
 		if (MessageBox(hDlg, message_text.c_str(), "File Not Found", MB_ICONQUESTION | MB_YESNO) == IDYES)
 		{
 			CloneStandardKeymap(CurrentConfig.KeyMap);
-			SaveCustomKeyMap(selected_path.string().c_str());
+
+			// FIXME-CHET: The SaveCustomKeyMap will show a dialog if an
+			// error occurs. This should be handled better.
+			if (SaveCustomKeyMap(selected_path.string().c_str()) == 0)
+			{
+				SetKeyMapFilePath(selected_path.string().c_str());
+			}
 		}
 	}
 }
