@@ -26,11 +26,10 @@
 namespace vcc::ui
 {
 
-	// @briev Closes a specified dialog or force exits the application.
-	// 
-	// Closes a specific dialog window or terminates the application of closing the window
-	// fails.
-
+	/// @brief Closes a specified dialog or force exits the application.
+	///
+	/// Closes a specific dialog window or terminates the application if closing the window
+	/// fails.
 	/// @param window_handle The window to close.
 	LIBCOMMON_EXPORT void close_cartridge_dialog_window(HWND window_handle);
 
