@@ -128,7 +128,7 @@ namespace VCC::Debugger::UI { namespace
 				{
 					{ "LWASM listing file", { "*.lst" } },
 					{ "Text File", { "*.txt" } },
-					{ "All Files", { "*.*0" } }
+					{ "All Files", { "*.*" } }
 				})
 			.append_flags(OFN_FILEMUSTEXIST);
 
