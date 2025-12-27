@@ -194,7 +194,15 @@ void LoadHardDisk([[maybe_unused]] int drive)
 	// TODO-CHET: Since the hard disk controller cartridge is currently not used and is
 	// pending rework/refactor, the updates to selecting and mounting disk images,
 	// associated UI, and other logic will be deferred until that time.
-	throw std::runtime_error("Not implemented");
+	HWND hWnd = GetActiveWindow();
+	MessageBox(
+		hWnd,
+		"The hard disk cartridge feature is not currently available.\n"
+		"This functionality will be restored in a future version.",
+		"Hard Disk Cartridge",
+		MB_OK | MB_ICONINFORMATION
+	);
+	return;
 
 #if 0
     char msg[300];
