@@ -136,7 +136,7 @@ namespace VCC::Debugger::UI { namespace
 		{
 			if (!LoadSource(select_dialog.selected_path().string().c_str()))
 			{
-				MessageBox(parentWindow, "Cannot load source listing", "Error", 0);
+				MessageBox(parentWindow, "Failed to load source listing", "Error", 0);
 			}
 		}
 	}
