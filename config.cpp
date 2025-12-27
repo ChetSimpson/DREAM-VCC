@@ -628,11 +628,10 @@ LRESULT CALLBACK CpuConfig(HWND hDlg, UINT message, WPARAM wParam, LPARAM /*lPar
 					.set_selection_filter({ { "ROM Image", {"*.rom"} } })
 					.append_flags(OFN_FILEMUSTEXIST);
 				if (select_dialog.do_modal_load_dialog(hDlg)) {
-					strncpy_s(
+					strcpy_s(
 						tmpcfg.ExtRomFile,
 						sizeof(tmpcfg.ExtRomFile),
-						select_dialog.selected_path().string().c_str(),
-						sizeof(tmpcfg.ExtRomFile));
+						select_dialog.selected_path().string().c_str());
 					
 					SetDlgItemText(hDlg, IDC_ROMPATH, tmpcfg.ExtRomFile);
 				}
