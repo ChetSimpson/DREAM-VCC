@@ -272,7 +272,13 @@ void Select_Disk([[maybe_unused]] unsigned char Disk)
 	// TODO-CHET: Since the hard disk controller cartridge is currently not used and is
 	// pending rework/refactor, the updates to selecting and mounting disk images,
 	// associated UI, and other logic will be deferred until that time.
-	throw std::runtime_error("Not implemented");
+	MessageBox(
+		GetActiveWindow(),
+		"SuperIDE disk image selection is not currently available.\n\n"
+		"This feature is pending refactor and will be re-enabled in a future version.",
+		"SuperIDE",
+		MB_OK | MB_ICONINFORMATION
+	);
 
 #if 0
 	::vcc::ui::select_file_dialog dlg;
