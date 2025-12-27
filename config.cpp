@@ -1182,7 +1182,7 @@ void SelectKeymapFile(HWND hDlg)
 		const auto message_text(std::format(
 			"The keymap file `{}` does not exist.\n\nWould you like to create it?",
 			selected_path.filename().string()));
-		if (MessageBox(hDlg, message_text.c_str(), "File Not Found", MB_ICONSTOP | MB_YESNO) == IDYES)
+		if (MessageBox(hDlg, message_text.c_str(), "File Not Found", MB_ICONQUESTION | MB_YESNO) == IDYES)
 		{
 			CloneStandardKeymap(CurrentConfig.KeyMap);
 			SaveCustomKeyMap(selected_path.string().c_str());
