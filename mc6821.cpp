@@ -483,7 +483,11 @@ void CaptureBit(unsigned char Sample)
 
 bool OpenPrintFile(const std::filesystem::path& path)
 {
-	assert(hPrintFile == INVALID_HANDLE_VALUE);
+	// If a print file is already open, close it to avoid leaking the handle.
+	if (hPrintFile != INVALID_HANDLE_VALUE)
+	{
+		ClosePrintSpoolFile();
+	}
 
 	hPrintFile = CreateFile(
 		path.string().c_str(),
